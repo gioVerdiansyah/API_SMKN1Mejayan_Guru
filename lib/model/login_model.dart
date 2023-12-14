@@ -5,9 +5,9 @@ import 'package:get_storage/get_storage.dart';
 import 'package:pkl_smkn1mejayan_guru/routes/api_route.dart';
 
 class LoginModel{
-  static GetStorage box = GetStorage();
 
   static Future sendPost(String username, String password) async{
+    GetStorage box = GetStorage();
     try {
       final Uri url = ApiRoutes.loginRoute;
       var response = await http.post(
@@ -23,7 +23,10 @@ class LoginModel{
       );
 
       var data = json.decode(response.body);
-      print(data);
+      if(data['login']['success']){
+        box.write('dataLogin', data);
+        print(data);
+      }
       return data;
     }catch(e){
       return {

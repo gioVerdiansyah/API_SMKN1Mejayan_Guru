@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pkl_smkn1mejayan_guru/modules/views/component/app_bar_component.dart';
-import 'package:pkl_smkn1mejayan_guru/modules/views/component/side_bar.dart';
+import 'package:pkl_smkn1mejayan_guru/modules/views/component/side_bar_component.dart';
 
 class HomePage extends StatefulWidget{
   const HomePage({super.key});
