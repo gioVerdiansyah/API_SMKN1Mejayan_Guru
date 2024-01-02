@@ -1,41 +1,27 @@
 import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:pkl_smkn1mejayan_guru/modules/views/component/truncate_and_capitalization.dart';
 
 import '../../../routes/app_route.dart';
 import '../login_page.dart';
 
-class SideBarComponent extends StatefulWidget{
+class SideBarComponent extends StatefulWidget {
   const SideBarComponent({super.key});
 
   @override
   State<SideBarComponent> createState() => _SideBarView();
 }
 
-class _SideBarView extends State<SideBarComponent>{
+class _SideBarView extends State<SideBarComponent> {
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     final GetStorage box = GetStorage();
     final guru = box.read('dataLogin')['login']['guru'] ?? "";
-    void NavigasiKe(routeName){
-      if(ModalRoute.of(context)?.settings.name != routeName) {
+    void NavigasiKe(routeName) {
+      if (ModalRoute.of(context)?.settings.name != routeName) {
         Navigator.pushNamed(context, routeName);
       }
-    }
-    String truncateAndCapitalizeLastWord(String text, int maxLength) {
-      if (text.length <= maxLength) {
-        return text;
-      }
-
-      List<String> words = text.split(' ');
-
-      if (words.last.length > 1) {
-        words[words.length - 1] = words.last[0].toUpperCase();
-      }
-
-      String truncatedText = words.join(' ');
-
-      return truncatedText;
     }
 
     return Drawer(
@@ -86,6 +72,22 @@ class _SideBarView extends State<SideBarComponent>{
             },
           ),
           ListTile(
+            title: const Text("Rekap Absensi"),
+            onTap: () {
+              NavigasiKe(AppRoute.rekapAbsensi);
+            },
+          ),ListTile(
+            title: const Text("Rekap Jurnal"),
+            onTap: () {
+              NavigasiKe(AppRoute.rekapJurnal);
+            },
+          ),ListTile(
+            title: const Text("Rekap Izin"),
+            onTap: () {
+              NavigasiKe(AppRoute.rekapIzin);
+            },
+          ),
+          ListTile(
             title: const Text("Logout"),
             onTap: () async {
               ArtDialogResponse response = await ArtSweetAlert.show(
@@ -95,20 +97,18 @@ class _SideBarView extends State<SideBarComponent>{
                       denyButtonText: "Batal",
                       title: "Apakah Anda yakin?",
                       confirmButtonText: "Ya, logout",
-                      type: ArtSweetAlertType.warning
-                  )
-              );
+                      type: ArtSweetAlertType.warning));
 
-              if(response==null) {
+              if (response == null) {
                 return;
               }
 
-              if(response.isTapConfirmButton) {
+              if (response.isTapConfirmButton) {
                 GetStorage().erase();
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (context) => LoginPage()),
-                      (route) => false,
+                  (route) => false,
                 );
                 return;
               }

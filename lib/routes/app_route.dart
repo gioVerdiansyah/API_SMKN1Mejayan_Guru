@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:pkl_smkn1mejayan_guru/modules/views/HomePage.dart';
+import 'package:pkl_smkn1mejayan_guru/modules/views/home_page.dart';
+import 'package:pkl_smkn1mejayan_guru/modules/views/rekap_absensi_page.dart';
 
+import '../modules/views/rekap_izin_page.dart';
 import '../modules/views/login_page.dart';
+import '../modules/views/rekap_jurnal_page.dart';
 
 class AppRoute{
   static GetStorage box = GetStorage();
@@ -20,9 +23,15 @@ class AppRoute{
   // RouteName
   static const String loginRoute = LoginPage.routeName;
   static const String homeRoute = HomePage.routeName;
+  static const String rekapAbsensi = RekapAbsensiPage.routeName;
+  static const String rekapJurnal = RekapJurnalPage.routeName;
+  static const String rekapIzin = RekapIzinPage.routeName;
 
   static Map<String, WidgetBuilder> routes={
-    homeRoute: (context) => const HomePage(),
+    homeRoute: (context) => HomePage(),
     loginRoute: (context) => LoginPage(),
+    rekapAbsensi: (context) => RekapAbsensiPage(),
+    rekapJurnal: (context) => RekapJurnalPage(),
+    rekapIzin: (context) => RekapIzinPage()
   };
 }
