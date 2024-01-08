@@ -31,7 +31,7 @@ class LoginModel{
     }catch(e){
       return {
         'login': {
-          'success': false, 'message': e
+          'success': false, 'message': 'Ada kesalahan Server'
         }
       };
     }

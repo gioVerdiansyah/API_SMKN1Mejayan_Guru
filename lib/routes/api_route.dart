@@ -5,4 +5,5 @@ class ApiRoutes {
 
   static final Uri loginRoute = Uri.parse("${dotenv.get('API_URL')}/login");
   static final Uri getDataAbsenRoute = Uri.parse("${dotenv.get('API_URL')}/absensi/get");
+  static final Uri getDataAbsenPulangRoute = Uri.parse("${dotenv.get('API_URL')}/absensi/pulang");
 }

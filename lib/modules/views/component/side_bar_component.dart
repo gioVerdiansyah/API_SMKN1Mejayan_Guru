@@ -31,8 +31,8 @@ class _SideBarView extends State<SideBarComponent> {
               decoration: const BoxDecoration(color: Colors.green),
               child: Row(
                 children: [
-                  Image.asset(
-                    'assets/images/jurusan/${guru['jurusan']['jurusan']}.png',
+                  Image.network(
+                    guru['jurusan']['gambar'],
                     width: 75,
                     height: 75,
                   ),
