@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:pkl_smkn1mejayan_guru/modules/views/detail_jurnal.dart';
 import 'package:pkl_smkn1mejayan_guru/modules/views/home_page.dart';
 import 'package:pkl_smkn1mejayan_guru/modules/views/rekap_absensi_page.dart';
 
@@ -32,6 +33,6 @@ class AppRoute{
     loginRoute: (context) => LoginPage(),
     rekapAbsensi: (context) => RekapAbsensiPage(),
     rekapJurnal: (context) => RekapJurnalPage(),
-    rekapIzin: (context) => RekapIzinPage()
+    rekapIzin: (context) => RekapIzinPage(),
   };
 }

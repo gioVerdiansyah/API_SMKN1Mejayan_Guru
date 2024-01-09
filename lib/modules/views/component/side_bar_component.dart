@@ -1,7 +1,7 @@
 import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:pkl_smkn1mejayan_guru/modules/views/component/truncate_and_capitalization.dart';
+import 'package:pkl_smkn1mejayan_guru/modules/views/component/utility.dart';
 
 import '../../../routes/app_route.dart';
 import '../login_page.dart';
@@ -44,7 +44,7 @@ class _SideBarView extends State<SideBarComponent> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "${truncateAndCapitalizeLastWord(guru['nama'], 15)} ${guru['gelar']}",
+                          "${truncateAndCapitalizeLastWord(guru['nama'])} ${guru['gelar']}",
                           style: TextStyle(fontSize: 15, color: Colors.white),
                           textAlign: TextAlign.left,
                         ),

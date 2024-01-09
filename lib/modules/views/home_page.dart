@@ -4,7 +4,7 @@ import 'package:pkl_smkn1mejayan_guru/modules/views/component/app_bar_component.
 import 'package:pkl_smkn1mejayan_guru/modules/views/component/side_bar_component.dart';
 import 'package:pkl_smkn1mejayan_guru/routes/app_route.dart';
 
-import 'component/truncate_and_capitalization.dart';
+import 'component/utility.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key});
@@ -61,7 +61,7 @@ class _HomeView extends State<HomePage> with TickerProviderStateMixin {
                           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          "${truncateAndCapitalizeLastWord(guru['nama'], 15)}" " ${guru['gelar']}",
+                          "${truncateAndCapitalizeLastWord(guru['nama'])}" " ${guru['gelar']}",
                           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                       ],
