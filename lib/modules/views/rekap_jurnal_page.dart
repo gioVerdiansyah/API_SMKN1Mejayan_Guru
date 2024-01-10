@@ -21,6 +21,26 @@ class RekapJurnalPage extends StatefulWidget {
 }
 
 class _RekapJurnalView extends State<RekapJurnalPage> {
+  late bool hasJurnal;
+
+  @override
+  void initState() {
+    super.initState();
+    hasJurnal = true;
+  }
+
+  void listSiswaBelumAbsen(int theDay) {
+    if (theDay > 0) {
+      setState(() {
+        hasJurnal = false;
+      });
+    }else if(theDay == 0){
+      setState(() {
+        hasJurnal = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,10 +58,31 @@ class _RekapJurnalView extends State<RekapJurnalPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Card(
+                  child: Container(
+                    width: double.infinity,
                     child: Column(
                       children: [
-                        DataTableAbsenComponent(),
+                        Card(
+                          child: DataTableJurnalComponent(hasJurnal: listSiswaBelumAbsen),
+                        ),
+                        if (hasJurnal)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 20),
+                            child: Card(
+                              child: Column(
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text("Siswa yang belum mengisi jurnal", style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20
+                                    )),
+                                  ),
+                                  DataTableDoesntJurnalComponent()
+                                ],
+                              ),
+                            ),
+                          )
                       ],
                     ),
                   ),
@@ -55,15 +96,18 @@ class _RekapJurnalView extends State<RekapJurnalPage> {
   }
 }
 
-class DataTableAbsenComponent extends StatefulWidget {
-  DataTableAbsenComponent({super.key});
+class DataTableJurnalComponent extends StatefulWidget {
+  DataTableJurnalComponent({super.key, required this.hasJurnal});
+  void Function(int) hasJurnal;
   GetStorage box = GetStorage();
 
   @override
-  State<DataTableAbsenComponent> createState() => _FetchingDataFragment();
+  State<DataTableJurnalComponent> createState() => _FetchingDataJurnalFragment(hasJurnal: hasJurnal);
 }
 
-class _FetchingDataFragment extends State<DataTableAbsenComponent> {
+class _FetchingDataJurnalFragment extends State<DataTableJurnalComponent> {
+  _FetchingDataJurnalFragment({required this.hasJurnal});
+  void Function(int) hasJurnal;
   Uri? changeJurnal;
   late int theDay;
   int? setStatus;
@@ -79,16 +123,16 @@ class _FetchingDataFragment extends State<DataTableAbsenComponent> {
     setState(() {
       (day == 'plus') ? theDay = (theDay + 1) : theDay = (theDay - 1);
       changeUrl();
+      hasJurnal(theDay);
     });
   }
 
   void changeUrl() {
-    if(setStatus != null){
+    if (setStatus != null) {
       changeJurnal = Uri.parse("${dotenv.get('API_URL')}/jurnal/prev_day/$theDay/$setStatus");
-    }else{
+    } else {
       changeJurnal = Uri.parse("${dotenv.get('API_URL')}/jurnal/prev_day/$theDay");
     }
-    print(changeJurnal);
   }
 
   int? getStatus(value) {
@@ -101,26 +145,27 @@ class _FetchingDataFragment extends State<DataTableAbsenComponent> {
         return 0;
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         FormBuilder(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 5),
-              child: FormBuilderDropdown(
-                name: 'tipe_data',
-                initialValue: selectedValue,
-                items: ['Semua', 'Disetujui', 'Ditolak'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    selectedValue = value.toString();
-                    setStatus = getStatus(value.toString());
-                    changeUrl();
-                  });
-                },
-              ),
-            )),
+          padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 5),
+          child: FormBuilderDropdown(
+            name: 'tipe_data',
+            initialValue: selectedValue,
+            items: ['Semua', 'Disetujui', 'Ditolak'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+            onChanged: (value) {
+              setState(() {
+                selectedValue = value.toString();
+                setStatus = getStatus(value.toString());
+                changeUrl();
+              });
+            },
+          ),
+        )),
         FutureBuilder(
             future: JurnalModel.getData(changeJurnal),
             builder: (context, snapshoot) {
@@ -129,22 +174,22 @@ class _FetchingDataFragment extends State<DataTableAbsenComponent> {
               } else if (snapshoot.hasError) {
                 return Text("Error: ${snapshoot.error}");
               } else {
-                List<DataRow> dataRow = (snapshoot.data['jurnal']['data'] as List)
-                    .asMap()
-                    .entries
-                    .map((entry) {
+                List<DataRow> dataRow = (snapshoot.data['jurnal']['data'] as List).asMap().entries.map((entry) {
                   var data = entry.value;
 
                   return DataRow(cells: <DataCell>[
-                    DataCell(Text(formatDate(data['created_at'], format: 'dd MMM'), textAlign: TextAlign.center,)),
-                    DataCell(Text(data['user']['name'])),
+                    DataCell(Text(
+                      formatDate(data['created_at'], format: 'dd MMM'),
+                      textAlign: TextAlign.center,
+                    )),
+                    DataCell(Text(truncateAndCapitalizeLastWord(data['user']['name'], maxLength: 10))),
                     DataCell(Text(truncateText(data['kegiatan'], 10))),
                     DataCell(TextButton(
                       onPressed: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => DetailJurnalPage(data: data)));
                       },
-                      child: const Text('Detail', style: TextStyle(color: Colors.white)),
                       style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.yellow)),
+                      child: const Text('Detail', style: TextStyle(color: Colors.white)),
                     )),
                   ]);
                 }).toList();
@@ -155,7 +200,10 @@ class _FetchingDataFragment extends State<DataTableAbsenComponent> {
                     child: Column(
                       children: [
                         const Text("Belum ada yang mengisi jurnal..."),
-                        NextPrevDayComponent(prevDay: prevDay, theDay: theDay,)
+                        NextPrevDayComponent(
+                          prevDay: prevDay,
+                          theDay: theDay,
+                        )
                       ],
                     ),
                   );
@@ -167,30 +215,97 @@ class _FetchingDataFragment extends State<DataTableAbsenComponent> {
                       DataColumn(
                           label: Expanded(
                               child: Text(
-                                "#",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ))),
+                        "#",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ))),
                       DataColumn(
                           label: Expanded(
                               child: Text(
-                                "Nama",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ))),
+                        "Nama",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ))),
                       DataColumn(
                           label: Expanded(
                               child: Text(
-                                "Kegitan",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ))),
+                        "Kegiatan",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ))),
                       DataColumn(
                           label: Expanded(
                               child: Text(
-                                "Aksi",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ))),
+                        "Aksi",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ))),
                     ], rows: dataRow),
-                    NextPrevDayComponent(prevDay: prevDay, theDay: theDay,)
+                    NextPrevDayComponent(
+                      prevDay: prevDay,
+                      theDay: theDay,
+                    )
                   ],
+                );
+              }
+            }),
+      ],
+    );
+  }
+}
+
+class DataTableDoesntJurnalComponent extends StatefulWidget {
+  DataTableDoesntJurnalComponent({super.key});
+  GetStorage box = GetStorage();
+
+  @override
+  State<DataTableDoesntJurnalComponent> createState() => _FetchingDataDoesntJurnalFragment();
+}
+
+class _FetchingDataDoesntJurnalFragment extends State<DataTableDoesntJurnalComponent> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        FutureBuilder(
+            future: JurnalModel.getDataDoesntJurnal(),
+            builder: (context, snapshoot) {
+              if (snapshoot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshoot.hasError) {
+                return Text("Error: ${snapshoot.error}");
+              } else {
+                List<DataRow> dataRow = (snapshoot.data['jurnal']['data'] as List).asMap().entries.map((entry) {
+                  var data = entry.value;
+                  var index = entry.key + 1;
+
+                  return DataRow(cells: <DataCell>[
+                    DataCell(Text(index.toString())),
+                    DataCell(Text(data['name'])),
+                  ]);
+                }).toList();
+
+                if (snapshoot.data['jurnal']['data'].isEmpty) {
+                  return const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text("Semua siswa sudah mengisi jurnal!!!", style: TextStyle(
+                      fontWeight: FontWeight.bold
+                    )),
+                  );
+                }
+
+                return Container(
+                  width: double.infinity,
+                  child: DataTable(columns: const <DataColumn>[
+                    DataColumn(
+                        label: Expanded(
+                            child: Text(
+                      "#",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ))),
+                    DataColumn(
+                        label: Expanded(
+                            child: Text(
+                      "Nama",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ))),
+                  ], rows: dataRow),
                 );
               }
             }),

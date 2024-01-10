@@ -10,4 +10,5 @@ class ApiRoutes {
   static final Uri getDataJurnalSetujuiRoute = Uri.parse("${dotenv.get('API_URL')}/jurnal/get");
   static final Uri getDataJurnalTolakRoute = Uri.parse("${dotenv.get('API_URL')}/jurnal/get");
   static final Uri updateStatusJurnalRoute = Uri.parse("${dotenv.get('API_URL')}/jurnal/agreement");
+  static final Uri getDataDoesntJurnal = Uri.parse("${dotenv.get('API_URL')}/jurnal/reject");
 }
