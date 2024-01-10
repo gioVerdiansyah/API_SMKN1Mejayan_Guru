@@ -8,8 +8,7 @@ class JurnalModel{
   static final GetStorage box = GetStorage();
   static Future getData(Uri? changeUrl)async{
     try{
-      final Uri uri = Uri.parse("${ApiRoutes.getDataJurnalRoute}");
-      final Uri url = Uri.parse("$uri?user_id=${box.read('dataLogin')['login']['guru']['user_id']}");
+      final Uri url = changeUrl ?? Uri.parse("${ApiRoutes.getDataJurnalRoute}");
       var response = await http.get(
         url,
         headers: {
@@ -19,7 +18,6 @@ class JurnalModel{
       );
 
       var data = json.decode(response.body);
-      print(data);
       return data;
     }catch(e){
       print(e);
