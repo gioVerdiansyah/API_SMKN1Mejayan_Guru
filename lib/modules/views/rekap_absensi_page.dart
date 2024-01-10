@@ -1,8 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:pkl_smkn1mejayan_guru/model/get_data_absen_model.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:pkl_smkn1mejayan_guru/model/absen_model.dart';
 import 'package:pkl_smkn1mejayan_guru/modules/views/component/app_bar_component.dart';
 import 'package:pkl_smkn1mejayan_guru/modules/views/component/side_bar_component.dart';
 import 'package:pkl_smkn1mejayan_guru/routes/api_route.dart';
@@ -18,19 +18,24 @@ class RekapAbsensiPage extends StatefulWidget {
 }
 
 class _RekapAbsensiView extends State<RekapAbsensiPage> {
-  List<dynamic> dataAbsensi = [];
+  late bool hasAbsen;
 
   @override
-  void initState() {
+  void initState(){
     super.initState();
-    fetchData();
+    hasAbsen = true;
   }
 
-  Future<void> fetchData() async {
-    var data = await GetDataAbsenModal.getData(ApiRoutes.getDataAbsenRoute);
-    setState(() {
-      dataAbsensi = data['absen']['data']['data'];
-    });
+  void handleHasAbsen(int theDay){
+    if(theDay > 0){
+      setState(() {
+        hasAbsen = false;
+      });
+    }else if(theDay == 0){
+      setState(() {
+        hasAbsen = true;
+      });
+    }
   }
 
   @override
@@ -40,22 +45,38 @@ class _RekapAbsensiView extends State<RekapAbsensiPage> {
       drawer: const SideBarComponent(),
       body: Container(
         child: Padding(
-          padding: const EdgeInsets.all(15),
+          padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
           child: Center(
             child: Column(
               children: [
                 Text(
                   getDateNow(),
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Card(
-                    child: Column(
-                      children: [
-                        DataTableAbsenComponent(),
-                      ],
-                    ),
+                  child: Column(
+                    children: [
+                      Card(
+                        child: DataTableAbsenComponent(hasAbsen: handleHasAbsen),
+                      ),
+                      if(hasAbsen)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 20),
+                          child: Card(child: Column(
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text("Siswa yang belum absen", style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20
+                                )),
+                              ),
+                              DataTableDoesntAbsenComponent(),
+                            ],
+                          )),
+                        )
+                    ],
                   ),
                 )
               ],
@@ -68,16 +89,44 @@ class _RekapAbsensiView extends State<RekapAbsensiPage> {
 }
 
 class DataTableAbsenComponent extends StatefulWidget {
-  DataTableAbsenComponent({super.key});
+  DataTableAbsenComponent({super.key, required this.hasAbsen});
   GetStorage box = GetStorage();
+  void Function(int) hasAbsen;
 
   @override
-  State<DataTableAbsenComponent> createState() => _FetchingDataFragment();
+  State<DataTableAbsenComponent> createState() => _FetchingDataFragment(hasAbsen: hasAbsen);
 }
 
 class _FetchingDataFragment extends State<DataTableAbsenComponent> {
+  _FetchingDataFragment({required this.hasAbsen});
   Uri? changeAbsen;
+  late int theDay;
+  int? setStatus;
+  void Function(int) hasAbsen;
   String selectedValue = '';
+
+  @override
+  void initState(){
+    super.initState();
+    theDay = 0;
+  }
+
+  void prevDay(String day) {
+    setState(() {
+      (day == 'plus') ? theDay = (theDay + 1) : theDay = (theDay - 1);
+      changeUrl();
+      hasAbsen(theDay);
+    });
+  }
+
+  void changeUrl() {
+    if (setStatus != null) {
+      changeAbsen = Uri.parse("${dotenv.get('API_URL')}/absen/prev_day/$theDay/$setStatus");
+    } else {
+      changeAbsen = Uri.parse("${dotenv.get('API_URL')}/absen/prev_day/$theDay");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -102,27 +151,27 @@ class _FetchingDataFragment extends State<DataTableAbsenComponent> {
               ),
             )),
         FutureBuilder(
-            future: GetDataAbsenModal.getData(changeAbsen),
-            builder: (context, snapshoot) {
-              if (snapshoot.connectionState == ConnectionState.waiting) {
+            future: AbsenModel.getData(changeAbsen),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
-              } else if (snapshoot.hasError) {
-                return Text("Error: ${snapshoot.error}");
+              } else if (snapshot.hasError) {
+                return Text("Error: ${snapshot.error}");
               } else {
-                  print("Snapshot: ${snapshoot.data}");
-                List<DataRow> dataRow = (snapshoot.data['absen']['data']['data'] as List).asMap().entries.map((entry) {
+                List<DataRow> dataRow = (snapshot.data['absen']['data']['data'] as List).asMap().entries.map((entry) {
                   int index = entry.key + 1;
                   var data = entry.value;
 
                   return DataRow(cells: <DataCell>[
                     DataCell(Text(index.toString())),
-                    DataCell(Text(data['user']['name'])),
+                    DataCell(Text((data['user'] == null) ? "Unknown" : truncateAndCapitalizeLastWord
+                      (data['user']['name'],maxLength: 10))),
                     DataCell(Text(capitalizeFirstLetter(data['status']))),
                     DataCell(Text(formatDate(data['created_at']))),
                   ]);
                 }).toList();
 
-                if (snapshoot.data['absen']['data']['data'].isEmpty) {
+                if (snapshot.data['absen']['data']['data'].isEmpty) {
                   return const Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Text("Belum ada yang absen..."),
@@ -133,7 +182,7 @@ class _FetchingDataFragment extends State<DataTableAbsenComponent> {
                 late List<Widget> paginate;
                 late MainAxisAlignment handleMainAxis;
 
-                var page = snapshoot.data['absen']['data'];
+                var page = snapshot.data['absen']['data'];
                 if (page['next_page_url'] != null && page['prev_page_url'] != null) {
                   handleMainAxis = MainAxisAlignment.spaceBetween;
                   paginate = [
@@ -220,6 +269,72 @@ class _FetchingDataFragment extends State<DataTableAbsenComponent> {
               }
             }),
       ],
+    );
+  }
+}
+
+class DataTableDoesntAbsenComponent extends StatefulWidget {
+  DataTableDoesntAbsenComponent({super.key});
+  GetStorage box = GetStorage();
+
+  @override
+  State<DataTableDoesntAbsenComponent> createState() => _FetchingDataDoesntAbsenFragment();
+}
+
+class _FetchingDataDoesntAbsenFragment extends State<DataTableDoesntAbsenComponent> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      child: Column(
+        children: [
+          FutureBuilder(
+              future: AbsenModel.getDataDoesntAbsen(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Text("Error: ${snapshot.error}");
+                } else {
+                  if (snapshot.data['absen']['data'].isEmpty) {
+                    return const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text("Semua siswa sudah absen!!!", style: TextStyle(
+                          fontWeight: FontWeight.bold
+                      )),
+                    );
+                  }
+                  List<DataRow> dataRow = (snapshot.data['absen']['data'] as List).asMap().entries.map((entry) {
+                    var data = entry.value;
+                    var index = entry.key + 1;
+
+                    return DataRow(cells: <DataCell>[
+                      DataCell(Text(index.toString())),
+                      DataCell(Text(data['name'] ?? "")),
+                    ]);
+                  }).toList();
+
+                  return Container(
+                    width: double.infinity,
+                    child: DataTable(columns: const <DataColumn>[
+                      DataColumn(
+                          label: Expanded(
+                              child: Text(
+                                "#",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ))),
+                      DataColumn(
+                          label: Expanded(
+                              child: Text(
+                                "Nama",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ))),
+                    ], rows: dataRow),
+                  );
+                }
+              }),
+        ],
+      ),
     );
   }
 }

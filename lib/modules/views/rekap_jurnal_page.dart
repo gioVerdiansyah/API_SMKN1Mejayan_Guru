@@ -7,9 +7,9 @@ import 'package:pkl_smkn1mejayan_guru/modules/views/component/app_bar_component.
 import 'package:pkl_smkn1mejayan_guru/modules/views/component/next_prev_day_component.dart';
 import 'package:pkl_smkn1mejayan_guru/modules/views/component/side_bar_component.dart';
 import 'package:pkl_smkn1mejayan_guru/modules/views/detail_jurnal.dart';
+import 'package:pkl_smkn1mejayan_guru/routes/api_route.dart';
 
 import '../../model/jurnal_model.dart';
-import '../../routes/api_route.dart';
 import 'component/utility.dart';
 
 class RekapJurnalPage extends StatefulWidget {
@@ -129,10 +129,11 @@ class _FetchingDataJurnalFragment extends State<DataTableJurnalComponent> {
 
   void changeUrl() {
     if (setStatus != null) {
-      changeJurnal = Uri.parse("${dotenv.get('API_URL')}/jurnal/prev_day/$theDay/$setStatus");
+      changeJurnal = Uri.parse("${ApiRoutes.jurnalNextPrevDayRoute}/$theDay/$setStatus");
     } else {
-      changeJurnal = Uri.parse("${dotenv.get('API_URL')}/jurnal/prev_day/$theDay");
+      changeJurnal = Uri.parse("${ApiRoutes.jurnalNextPrevDayRoute}/$theDay");
     }
+    print(changeJurnal);
   }
 
   int? getStatus(value) {
