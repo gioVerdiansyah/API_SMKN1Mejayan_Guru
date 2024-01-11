@@ -14,6 +14,7 @@ class ApiRoutes {
   static final Uri getDataJurnalSetujuiRoute = Uri.parse("${dotenv.get('API_URL')}/$guruId/jurnal/get");
   static final Uri getDataJurnalTolakRoute = Uri.parse("${dotenv.get('API_URL')}/$guruId/jurnal/get");
   static final Uri updateStatusJurnalRoute = Uri.parse("${dotenv.get('API_URL')}/$guruId/jurnal/agreement");
+  static final Uri updateStatusIzinRoute = Uri.parse("${dotenv.get('API_URL')}/$guruId/izin/agreement");
   static final Uri jurnalNextPrevDayRoute = Uri.parse("${dotenv.get('API_URL')}/$guruId/jurnal/prev_day");
   static final Uri getDataDoesntJurnal = Uri.parse("${dotenv.get('API_URL')}/$guruId/jurnal/reject");
   static final Uri getDataDoesntAbsen = Uri.parse("${dotenv.get('API_URL')}/$guruId/absen/reject");

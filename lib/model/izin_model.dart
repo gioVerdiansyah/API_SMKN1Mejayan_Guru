@@ -27,4 +27,33 @@ class IzinModel {
        };
      }
    }
+
+   static Future agreementIzin(int izinId,String? keterangan, int status) async {
+     try{
+       final Uri url = ApiRoutes.updateStatusIzinRoute;
+       var response = await http.put(
+           url,
+           headers: {
+             'Content-Type': 'application/json',
+             'x-api-key': ApiRoutes.API_KEY
+           },
+           body: json.encode({
+             'izin_id': izinId,
+             'keterangan': keterangan,
+             'status': status
+           })
+       );
+
+       var data = json.decode(response.body);
+       print(data);
+       return data;
+     }catch(e){
+       return {
+         'jurnal': {
+           'success': false,
+           'message': "Ada kesalahan aplikasi!"
+         }
+       };
+     }
+   }
 }
