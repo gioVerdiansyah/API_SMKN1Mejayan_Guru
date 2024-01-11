@@ -6,6 +6,7 @@ import 'package:pkl_smkn1mejayan_guru/model/absen_model.dart';
 import 'package:pkl_smkn1mejayan_guru/modules/views/component/app_bar_component.dart';
 import 'package:pkl_smkn1mejayan_guru/modules/views/component/side_bar_component.dart';
 import 'package:pkl_smkn1mejayan_guru/routes/api_route.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'component/utility.dart';
 
@@ -21,17 +22,17 @@ class _RekapAbsensiView extends State<RekapAbsensiPage> {
   late bool hasAbsen;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     hasAbsen = true;
   }
 
-  void handleHasAbsen(int theDay){
-    if(theDay > 0){
+  void handleHasAbsen(int theDay) {
+    if (theDay > 0) {
       setState(() {
         hasAbsen = false;
       });
-    }else if(theDay == 0){
+    } else if (theDay == 0) {
       setState(() {
         hasAbsen = true;
       });
@@ -60,22 +61,33 @@ class _RekapAbsensiView extends State<RekapAbsensiPage> {
                       Card(
                         child: DataTableAbsenComponent(hasAbsen: handleHasAbsen),
                       ),
-                      if(hasAbsen)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 20),
-                          child: Card(child: Column(
-                            children: [
-                              const Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text("Siswa yang belum absen", style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20
-                                )),
-                              ),
-                              DataTableDoesntAbsenComponent(),
-                            ],
-                          )),
-                        )
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Card(
+                          child: TextButton.icon(
+                              onPressed: () {
+                                launchUrl(ApiRoutes.cetakRekabAbsenRoute);
+                              },
+                              icon: const Icon(Icons.print, color: Colors.white),
+                              label: const Text(
+                                  "Cetak "
+                                  "data absensi",
+                                  style: TextStyle(color: Colors.white)),
+                              style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.yellow))),
+                        ),
+                      ),
+                      if (hasAbsen)
+                        Card(
+                            child: Column(
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text("Siswa yang belum absen",
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                            ),
+                            DataTableDoesntAbsenComponent(),
+                          ],
+                        ))
                     ],
                   ),
                 )
@@ -106,7 +118,7 @@ class _FetchingDataFragment extends State<DataTableAbsenComponent> {
   String selectedValue = '';
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     theDay = 0;
   }
@@ -133,23 +145,21 @@ class _FetchingDataFragment extends State<DataTableAbsenComponent> {
       children: [
         FormBuilder(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 5),
-              child: FormBuilderDropdown(
-                name: 'tipe_data',
-                initialValue: (selectedValue != 'Absensi Kehadiran') ? 'Absensi Kehadiran' : 'Absensi Pulang',
-                items: ['Absensi Kehadiran', 'Absensi Pulang']
-                    .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                    .toList(),
-                onChanged: (value) {
-                  setState(() {
-                    selectedValue = value.toString();
-                    changeAbsen = (selectedValue == 'Absensi Kehadiran')
-                        ? ApiRoutes.getDataAbsenRoute
-                        : ApiRoutes.getDataAbsenPulangRoute;
-                  });
-                },
-              ),
-            )),
+          padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 5),
+          child: FormBuilderDropdown(
+            name: 'tipe_data',
+            initialValue: (selectedValue != 'Absensi Kehadiran') ? 'Absensi Kehadiran' : 'Absensi Pulang',
+            items: ['Absensi Kehadiran', 'Absensi Pulang'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+            onChanged: (value) {
+              setState(() {
+                selectedValue = value.toString();
+                changeAbsen = (selectedValue == 'Absensi Kehadiran')
+                    ? ApiRoutes.getDataAbsenRoute
+                    : ApiRoutes.getDataAbsenPulangRoute;
+              });
+            },
+          ),
+        )),
         FutureBuilder(
             future: AbsenModel.getData(changeAbsen),
             builder: (context, snapshot) {
@@ -164,8 +174,9 @@ class _FetchingDataFragment extends State<DataTableAbsenComponent> {
 
                   return DataRow(cells: <DataCell>[
                     DataCell(Text(index.toString())),
-                    DataCell(Text((data['user'] == null) ? "Unknown" : truncateAndCapitalizeLastWord
-                      (data['user']['name'],maxLength: 10))),
+                    DataCell(Text((data['user'] == null)
+                        ? "Unknown"
+                        : truncateAndCapitalizeLastWord(data['user']['name'], maxLength: 10))),
                     DataCell(Text(capitalizeFirstLetter(data['status']))),
                     DataCell(Text(formatDate(data['created_at']))),
                   ]);
@@ -223,13 +234,9 @@ class _FetchingDataFragment extends State<DataTableAbsenComponent> {
                         },
                         child: const Text("Next day >>"))
                   ];
-                }else{
+                } else {
                   handleMainAxis = MainAxisAlignment.start;
-                  paginate = [
-                    TextButton(
-                        onPressed: () {},
-                        child: const Text(""))
-                  ];
+                  paginate = [TextButton(onPressed: () {}, child: const Text(""))];
                 }
 
                 return Column(
@@ -299,9 +306,7 @@ class _FetchingDataDoesntAbsenFragment extends State<DataTableDoesntAbsenCompone
                   if (snapshot.data['absen']['data'].isEmpty) {
                     return const Padding(
                       padding: EdgeInsets.all(8.0),
-                      child: Text("Semua siswa sudah absen!!!", style: TextStyle(
-                          fontWeight: FontWeight.bold
-                      )),
+                      child: Text("Semua siswa sudah absen!!!", style: TextStyle(fontWeight: FontWeight.bold)),
                     );
                   }
                   List<DataRow> dataRow = (snapshot.data['absen']['data'] as List).asMap().entries.map((entry) {
@@ -320,15 +325,15 @@ class _FetchingDataDoesntAbsenFragment extends State<DataTableDoesntAbsenCompone
                       DataColumn(
                           label: Expanded(
                               child: Text(
-                                "#",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ))),
+                        "#",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ))),
                       DataColumn(
                           label: Expanded(
                               child: Text(
-                                "Nama",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ))),
+                        "Nama",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ))),
                     ], rows: dataRow),
                   );
                 }

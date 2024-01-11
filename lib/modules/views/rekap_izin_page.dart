@@ -41,34 +41,6 @@ class _RekapJurnalView extends State<RekapIzinPage> {
                           child: DataTabeleIzinComponent(),
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Card(
-                              child: TextButton.icon(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.print, color: Colors.white),
-                                  label: const Text(
-                                      "Cetak "
-                                      "data izin per bulan",
-                                      style: TextStyle(color: Colors.white)),
-                                  style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.yellow))),
-                            ),
-                            Card(
-                              child: TextButton.icon(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.print, color: Colors.white),
-                                  label: const Text(
-                                      "Cetak semua "
-                                      "data izin",
-                                      style: TextStyle(color: Colors.white)),
-                                  style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.yellow))),
-                            ),
-                          ],
-                        ),
-                      )
                     ],
                   )
                 ],
@@ -156,7 +128,7 @@ class _FetchingDataFragment extends State<DataTabeleIzinComponent> {
                   return DataRow(cells: <DataCell>[
                     DataCell(Text(
                       formatDate(data['created_at'], format: 'dd MMM'),
-                      style: TextStyle(color: setStatusColor()),
+                      style: TextStyle(color: setStatusColor()) , textAlign: TextAlign.center,
                     )),
                     DataCell(Text((data['user'] == null)
                         ? "Unknown"

@@ -178,10 +178,21 @@ class _FetchingDataJurnalFragment extends State<DataTableJurnalComponent> {
                 List<DataRow> dataRow = (snapshoot.data['jurnal']['data'] as List).asMap().entries.map((entry) {
                   var data = entry.value;
 
+                  Color? setStatusColor() {
+                    switch (data['status']) {
+                      case '1':
+                        return Colors.green;
+                      case '2':
+                        return Colors.red;
+                      default:
+                        return Colors.black;
+                    }
+                  }
+
                   return DataRow(cells: <DataCell>[
                     DataCell(Text(
                       formatDate(data['created_at'], format: 'dd MMM'),
-                      textAlign: TextAlign.center,
+                      style: TextStyle(color: setStatusColor()), textAlign: TextAlign.center,
                     )),
                     DataCell(Text(truncateAndCapitalizeLastWord(data['user']['name'], maxLength: 10))),
                     DataCell(Text(truncateText(data['kegiatan'], 10))),
