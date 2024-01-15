@@ -6,7 +6,7 @@ class ApiRoutes {
   static final GetStorage box = GetStorage();
 
   static final Uri loginRoute = Uri.parse("${dotenv.get('API_URL')}/login");
-  static final String guruId = box.read('dataLogin')['login']['guru']['id'];
+  static final String guruId = box.read('dataLogin')['guru']['id'];
 
   static final Uri getDataAbsenRoute = Uri.parse("${dotenv.get('API_URL')}/$guruId/absensi/get");
   static final Uri getDataAbsenPulangRoute = Uri.parse("${dotenv.get('API_URL')}/$guruId/absensi/pulang");

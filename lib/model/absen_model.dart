@@ -16,7 +16,7 @@ class AbsenModel {
     } catch (e) {
       print(e);
       return {
-        'absensi': {'success': false, 'message': 'Ada kesalahan dari aplikasi'}
+        'success': false, 'message': 'Ada kesalahan dari aplikasi'
       };
     }
   }
@@ -26,11 +26,11 @@ class AbsenModel {
       final Uri url = ApiRoutes.getDataDoesntAbsen;
       var response = await http.get(url, headers: {'Content-Type': 'application/json', 'x-api-key': ApiRoutes.API_KEY});
       var data = json.decode(response.body);
-      print(data);
+      // print(data);
       return data;
     } catch (e) {
       return {
-        'absen': {'success': false, 'message': "Ada kesalahan dari aplikasi"}
+        'success': false, 'message': "Ada kesalahan dari aplikasi"
       };
     }
   }

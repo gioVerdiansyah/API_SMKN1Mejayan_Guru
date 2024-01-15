@@ -39,10 +39,10 @@ class _HomeView extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final guru = widget.box.read('dataLogin')['login']['guru'] ?? "";
+    final guru = widget.box.read('dataLogin')['guru'] ?? "";
     return Scaffold(
-      appBar: AppBarComponent(),
-      drawer: SideBarComponent(),
+      appBar: const AppBarComponent(),
+      drawer: const SideBarComponent(),
       body: Container(
         child: Center(
             child: Padding(

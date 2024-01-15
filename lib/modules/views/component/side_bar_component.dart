@@ -18,7 +18,8 @@ class _SideBarView extends State<SideBarComponent> {
   @override
   Widget build(BuildContext context) {
     final GetStorage box = GetStorage();
-    final guru = box.read('dataLogin')['login']['guru'] ?? "";
+    final dataLogin = box.read('dataLogin');
+    final guru = dataLogin['guru'] ?? "";
     void NavigasiKe(routeName) {
       if (ModalRoute.of(context)?.settings.name != routeName) {
         Navigator.pushNamed(context, routeName);
@@ -57,7 +58,7 @@ class _SideBarView extends State<SideBarComponent> {
                         ),
                         const SizedBox(height: 10),
                         Text(
-                          'Ketua Jurusan ${guru['jurusan']['jurusan']}',
+                          guru['email'],
                           style: const TextStyle(fontSize: 15, color: Colors.white),
                           textAlign: TextAlign.left,
                         ),

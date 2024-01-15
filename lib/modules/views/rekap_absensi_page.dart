@@ -44,58 +44,60 @@ class _RekapAbsensiView extends State<RekapAbsensiPage> {
     return Scaffold(
       appBar: const AppBarComponent(),
       drawer: const SideBarComponent(),
-      body: Container(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
-          child: Center(
-            child: Column(
-              children: [
-                Text(
-                  getDateNow(),
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      Card(
-                        child: DataTableAbsenComponent(hasAbsen: handleHasAbsen),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Card(
-                          child: TextButton.icon(
-                              onPressed: () {
-                                launchUrl(ApiRoutes.cetakRekabAbsenRoute);
-                              },
-                              icon: const Icon(Icons.print, color: Colors.white),
-                              label: const Text(
-                                  "Cetak "
-                                  "data absensi",
-                                  style: TextStyle(color: Colors.white)),
-                              style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.yellow))),
-                        ),
-                      ),
-                      if (hasAbsen)
-                        Card(
-                            child: Column(
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text("Siswa yang belum absen",
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-                            ),
-                            DataTableDoesntAbsenComponent(),
-                          ],
-                        ))
-                    ],
+      body: ListView(children: [
+        Container(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
+            child: Center(
+              child: Column(
+                children: [
+                  Text(
+                    getDateNow(),
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                   ),
-                )
-              ],
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Card(
+                          child: DataTableAbsenComponent(hasAbsen: handleHasAbsen),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: Card(
+                            child: TextButton.icon(
+                                onPressed: () {
+                                  launchUrl(ApiRoutes.cetakRekabAbsenRoute);
+                                },
+                                icon: const Icon(Icons.print, color: Colors.white),
+                                label: const Text(
+                                    "Cetak "
+                                    "data absensi",
+                                    style: TextStyle(color: Colors.white)),
+                                style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.yellow))),
+                          ),
+                        ),
+                        if (hasAbsen)
+                          Card(
+                              child: Column(
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text("Siswa yang belum absen",
+                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                              ),
+                              DataTableDoesntAbsenComponent(),
+                            ],
+                          ))
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),
-      ),
+      ]),
     );
   }
 }
@@ -143,23 +145,6 @@ class _FetchingDataFragment extends State<DataTableAbsenComponent> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        FormBuilder(
-            child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 5),
-          child: FormBuilderDropdown(
-            name: 'tipe_data',
-            initialValue: (selectedValue != 'Absensi Kehadiran') ? 'Absensi Kehadiran' : 'Absensi Pulang',
-            items: ['Absensi Kehadiran', 'Absensi Pulang'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
-            onChanged: (value) {
-              setState(() {
-                selectedValue = value.toString();
-                changeAbsen = (selectedValue == 'Absensi Kehadiran')
-                    ? ApiRoutes.getDataAbsenRoute
-                    : ApiRoutes.getDataAbsenPulangRoute;
-              });
-            },
-          ),
-        )),
         FutureBuilder(
             future: AbsenModel.getData(changeAbsen),
             builder: (context, snapshot) {
@@ -168,7 +153,8 @@ class _FetchingDataFragment extends State<DataTableAbsenComponent> {
               } else if (snapshot.hasError) {
                 return Text("Error: ${snapshot.error}");
               } else {
-                List<DataRow> dataRow = (snapshot.data['absen']['data']['data'] as List).asMap().entries.map((entry) {
+                print("Kelompok: ${snapshot.data['kelompok']}");
+                List<DataRow> dataRow = (snapshot.data['data']['data'] as List).asMap().entries.map((entry) {
                   int index = entry.key + 1;
                   var data = entry.value;
 
@@ -182,7 +168,7 @@ class _FetchingDataFragment extends State<DataTableAbsenComponent> {
                   ]);
                 }).toList();
 
-                if (snapshot.data['absen']['data']['data'].isEmpty) {
+                if (snapshot.data['data']['data'].isEmpty) {
                   return const Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Text("Belum ada yang absen..."),
@@ -193,7 +179,7 @@ class _FetchingDataFragment extends State<DataTableAbsenComponent> {
                 late List<Widget> paginate;
                 late MainAxisAlignment handleMainAxis;
 
-                var page = snapshot.data['absen']['data'];
+                var page = snapshot.data['data'];
                 if (page['next_page_url'] != null && page['prev_page_url'] != null) {
                   handleMainAxis = MainAxisAlignment.spaceBetween;
                   paginate = [
@@ -241,6 +227,23 @@ class _FetchingDataFragment extends State<DataTableAbsenComponent> {
 
                 return Column(
                   children: [
+                    FormBuilder(
+                        child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 5),
+                      child: FormBuilderDropdown(
+                        initialValue: snapshot.data['kelompok'][0],
+                        name: 'tipe_data',
+                        items: (snapshot.data['kelompok'] as List)
+                            .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                            .toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedValue = value.toString();
+                            changeAbsen = Uri.parse("${ApiRoutes.getDataAbsenRoute}/${value.toString()}");
+                          });
+                        },
+                      ),
+                    )),
                     DataTable(columns: const <DataColumn>[
                       DataColumn(
                           label: Expanded(
@@ -303,13 +306,13 @@ class _FetchingDataDoesntAbsenFragment extends State<DataTableDoesntAbsenCompone
                 } else if (snapshot.hasError) {
                   return Text("Error: ${snapshot.error}");
                 } else {
-                  if (snapshot.data['absen']['data'].isEmpty) {
+                  if (snapshot.data['data'].isEmpty) {
                     return const Padding(
                       padding: EdgeInsets.all(8.0),
                       child: Text("Semua siswa sudah absen!!!", style: TextStyle(fontWeight: FontWeight.bold)),
                     );
                   }
-                  List<DataRow> dataRow = (snapshot.data['absen']['data'] as List).asMap().entries.map((entry) {
+                  List<DataRow> dataRow = (snapshot.data['data'] as List).asMap().entries.map((entry) {
                     var data = entry.value;
                     var index = entry.key + 1;
 

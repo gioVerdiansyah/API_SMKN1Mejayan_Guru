@@ -23,16 +23,15 @@ class LoginModel{
       );
 
       var data = json.decode(response.body);
-      if(data['login']['success']){
-        box.write('dataLogin', data);
+      if(data['success']){
+        box.write('dataLogin', data['data']);
         print(data);
       }
       return data;
     }catch(e){
+      print(e);
       return {
-        'login': {
-          'success': false, 'message': 'Ada kesalahan Server'
-        }
+        'success': false, 'message': 'Ada kesalahan Server'
       };
     }
   }
