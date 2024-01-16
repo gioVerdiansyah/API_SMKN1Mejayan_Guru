@@ -1,9 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
 String formatDate(String timestamp, {String? format}) {
   DateTime dateTime = DateTime.parse(timestamp).toLocal();
 
-  String formattedDate = DateFormat(format ?? 'dd MMM At HH:mm', 'id_ID').format(dateTime);
+  String formattedDate = DateFormat(format ?? 'dd MMM HH:mm', 'id_ID').format(dateTime);
   return formattedDate;
 }
 
@@ -17,15 +18,42 @@ String capitalizeFirstLetter(String input) {
     case '1':
       return 'Hadir';
     case '2':
-      return 'Telat';
+      return 'Hadir/Telat';
     case '3':
       return 'Alpha';
     case '4':
       return 'WFH';
     case '5':
-      return 'Pulang';
+      return 'WFH/Telat';
     default:
       return 'Unknown';
+  }
+}
+
+String getDay() {
+  var now = DateTime.now();
+  var formatter = DateFormat('EEEE', 'id_ID');
+  var hari = formatter.format(now);
+  return hari.toLowerCase();
+}
+
+Widget checkStatus(data, childData) {
+  if(childData['status'] == '2' || childData['status'] == '5') {
+    String? jamDatang = childData['datang'];
+    print("DATANYA: ${jamDatang}");
+
+    String jamPerusahaan = data['dudi'][getDay()]!.split(' - ')[0];
+    print("DATANYA: ${jamPerusahaan}");
+
+    String waktuDatangEncode = DateFormat('H:m').format(DateTime.parse(jamDatang!));
+    DateTime waktuDatang = DateFormat('H:m').parse(waktuDatangEncode);
+    DateTime waktuPerusahaan = DateFormat.Hm().parse(jamPerusahaan);
+
+    Duration selisihWaktu = waktuDatang.difference(waktuPerusahaan);
+
+      return Text("${capitalizeFirstLetter(childData['status'])} ${selisihWaktu.inMinutes} mnt");
+  }else{
+    return Text(capitalizeFirstLetter(childData['status']));
   }
 }
 
@@ -53,4 +81,14 @@ String truncateAndCapitalizeLastWord(String text, {int? maxLength}) {
   String truncatedText = words.join(' ');
 
   return truncatedText;
+}
+
+String konversiTanggal(int jumlahHari) {
+  DateTime tanggalSekarang = DateTime.now();
+
+  DateTime tanggalHasil = tanggalSekarang.subtract(Duration(days: jumlahHari));
+
+  String tanggalFormat = DateFormat('dd MMMM', 'id_ID').format(tanggalHasil);
+
+  return tanggalFormat;
 }

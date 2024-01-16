@@ -4,10 +4,10 @@ import 'package:http/http.dart' as http;
 import 'package:pkl_smkn1mejayan_guru/routes/api_route.dart';
 
 class AbsenModel {
-  static Future getData(Uri? isAbsenPulang) async {
+  static Future getData({Uri? changeUrl}) async {
     try {
-      final Uri url = isAbsenPulang ?? ApiRoutes.getDataAbsenRoute;
-      print(isAbsenPulang);
+      final Uri url = changeUrl ?? ApiRoutes.getDataAbsenRoute;
+      print(changeUrl);
       var response = await http.get(url, headers: {'x-api-key': ApiRoutes.API_KEY});
 
       var data = json.decode(response.body);
@@ -21,9 +21,9 @@ class AbsenModel {
     }
   }
 
-  static Future getDataDoesntAbsen() async {
+  static Future getDataDoesntAbsen(String? namaKelompok) async {
     try {
-      final Uri url = ApiRoutes.getDataDoesntAbsen;
+      final Uri url = Uri.parse("${ApiRoutes.getDataDoesntAbsen}/$namaKelompok");
       var response = await http.get(url, headers: {'Content-Type': 'application/json', 'x-api-key': ApiRoutes.API_KEY});
       var data = json.decode(response.body);
       // print(data);

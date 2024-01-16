@@ -15,6 +15,7 @@ class NextPrevDayComponent extends StatelessWidget{
   }
   @override
   Widget build(BuildContext context){
+    print(theDay);
     // Handle element pagination
     late List<Widget> paginate;
     late MainAxisAlignment handleMainAxis;
@@ -26,12 +27,12 @@ class NextPrevDayComponent extends StatelessWidget{
             onPressed: () {
               _decrementDay();
             },
-            child: const Text("<< Prev day")),
+            child: const Text("<< Next day")),
         TextButton(
             onPressed: () {
               _incrementDay();
             },
-            child: const Text("Next day >>"))
+            child: const Text("Prev day >>"))
       ];
     } else if (theDay != 0) {
       handleMainAxis = MainAxisAlignment.start;
@@ -40,7 +41,7 @@ class NextPrevDayComponent extends StatelessWidget{
             onPressed: () {
               _decrementDay();
             },
-            child: const Text("<< Prev day"))
+            child: const Text("<< Next day"))
       ];
     } else if (theDay >= 0) {
       handleMainAxis = MainAxisAlignment.end;
@@ -49,7 +50,7 @@ class NextPrevDayComponent extends StatelessWidget{
             onPressed: () {
               _incrementDay();
             },
-            child: const Text("Next day >>"))
+            child: const Text("Prev day >>"))
       ];
     } else {
       print('kososng');

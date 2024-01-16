@@ -175,7 +175,7 @@ class _FetchingDataJurnalFragment extends State<DataTableJurnalComponent> {
               } else if (snapshoot.hasError) {
                 return Text("Error: ${snapshoot.error}");
               } else {
-                List<DataRow> dataRow = (snapshoot.data['jurnal']['data'] as List).asMap().entries.map((entry) {
+                List<DataRow> dataRow = (snapshoot.data['data'] as List).asMap().entries.map((entry) {
                   var data = entry.value;
 
                   Color? setStatusColor() {
@@ -206,7 +206,7 @@ class _FetchingDataJurnalFragment extends State<DataTableJurnalComponent> {
                   ]);
                 }).toList();
 
-                if (snapshoot.data['jurnal']['data'].isEmpty) {
+                if (snapshoot.data['data'].isEmpty) {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
@@ -283,7 +283,7 @@ class _FetchingDataDoesntJurnalFragment extends State<DataTableDoesntJurnalCompo
               } else if (snapshoot.hasError) {
                 return Text("Error: ${snapshoot.error}");
               } else {
-                List<DataRow> dataRow = (snapshoot.data['jurnal']['data'] as List).asMap().entries.map((entry) {
+                List<DataRow> dataRow = (snapshoot.data['data'] as List).asMap().entries.map((entry) {
                   var data = entry.value;
                   var index = entry.key + 1;
 
@@ -293,7 +293,7 @@ class _FetchingDataDoesntJurnalFragment extends State<DataTableDoesntJurnalCompo
                   ]);
                 }).toList();
 
-                if (snapshoot.data['jurnal']['data'].isEmpty) {
+                if (snapshoot.data['data'].isEmpty) {
                   return const Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Text("Semua siswa sudah mengisi jurnal!!!", style: TextStyle(
