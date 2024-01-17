@@ -83,7 +83,7 @@ String truncateAndCapitalizeLastWord(String text, {int? maxLength}) {
   return truncatedText;
 }
 
-String konversiTanggal(int jumlahHari) {
+String convertDayFromNumber(int jumlahHari) {
   DateTime tanggalSekarang = DateTime.now();
 
   DateTime tanggalHasil = tanggalSekarang.subtract(Duration(days: jumlahHari));

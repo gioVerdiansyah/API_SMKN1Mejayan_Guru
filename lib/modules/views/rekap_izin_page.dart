@@ -18,6 +18,14 @@ class RekapIzinPage extends StatefulWidget {
 }
 
 class _RekapJurnalView extends State<RekapIzinPage> {
+  Uri? changeUrl;
+
+  void handleChangeUrl(Uri url) {
+    setState(() {
+      changeUrl = url;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,25 +34,37 @@ class _RekapJurnalView extends State<RekapIzinPage> {
       body: Container(
         child: Center(
           child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
-              child: Column(
-                children: [
-                  Text(
-                    getDateNow(),
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                  ),
-                  Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Card(
-                          child: DataTabeleIzinComponent(),
+            padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
+            child: FutureBuilder(
+              future: IzinModel.getData(changeUrl: changeUrl),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Text("Error: ${snapshot.error}");
+                } else if (snapshot.data['kelompok'] == null || snapshot.data['kelompok'].isEmpty) {
+                  return const Text("Anda belum mempunyai kelompok untuk di urus");
+                } else {
+                  return Column(children: [
+                    Text(
+                      getDateNow(),
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
+                    Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Card(
+                            child: DataTabeleIzinComponent(data: snapshot.data, changeUrl: handleChangeUrl),
+                          ),
                         ),
-                      ),
-                    ],
-                  )
-                ],
-              )),
+                      ],
+                    )
+                  ]);
+                }
+              },
+            ),
+          ),
         ),
       ),
     );
@@ -52,191 +72,221 @@ class _RekapJurnalView extends State<RekapIzinPage> {
 }
 
 class DataTabeleIzinComponent extends StatefulWidget {
-  DataTabeleIzinComponent({super.key});
+  DataTabeleIzinComponent({super.key, required this.data, required this.changeUrl});
+  final data;
+  void Function(Uri) changeUrl;
 
   @override
-  State<DataTabeleIzinComponent> createState() => _FetchingDataFragment();
+  State<DataTabeleIzinComponent> createState() => _FetchingDataFragment(data: data, changeUrl: changeUrl);
 }
 
 class _FetchingDataFragment extends State<DataTabeleIzinComponent> {
+  _FetchingDataFragment({required this.data, required this.changeUrl});
+  final data;
+
+  void Function(Uri) changeUrl;
   Uri? changeIzin;
-  int? setStatus;
-  late int theDay;
-  String selectedValue = 'Semua';
+  String? statusIni;
+  late String namaKelompok;
 
   @override
   void initState() {
     super.initState();
-    theDay = 0;
+    namaKelompok = data['kelompok_ini'];
+    statusIni = getNameFromStatus(data['status']);
   }
 
-  int? getStatus(value) {
+  String getNameFromStatus(value) {
+    switch (value) {
+      case '1':
+        return 'Disetujui';
+      case '2':
+        return 'Ditolak';
+      default:
+        return 'Semua';
+    }
+  }
+
+  String? getStatus(value) {
     switch (value) {
       case 'Disetujui':
-        changeIzin = Uri.parse("${ApiRoutes.getDataIzinRoute}/1");
-        return 1;
+        return '1';
       case 'Ditolak':
-        changeIzin = Uri.parse("${ApiRoutes.getDataIzinRoute}/2");
-        return 2;
+        return '2';
       default:
-        changeIzin = ApiRoutes.getDataIzinRoute;
-        return 0;
+        return '0';
+    }
+  }
+
+  void handleChangeKelompok(nama_kelompok) {
+    setState(() {
+      namaKelompok = nama_kelompok;
+      changeUrl(Uri.parse("${ApiRoutes.getDataIzinRoute}/$namaKelompok"));
+    });
+  }
+
+  void handleChangeStatus(status) {
+    setState(() {
+      statusIni = status;
+      changeUrl(Uri.parse("${ApiRoutes.getDataIzinRoute}/$namaKelompok/$statusIni"));
+    });
+  }
+
+  void handlePaginate(url) {
+    setState(() {
+      changeUrl(Uri.parse(url));
+    });
+  }
+
+  Color? setStatusColor(value) {
+    switch (value) {
+      case '1':
+        return Colors.green;
+      case '2':
+        return Colors.red;
+      default:
+        return Colors.yellow;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    List<DataRow> dataRow = (data['data']['data'] as List).asMap().entries.map((entry) {
+      var currentData = entry.value;
+
+      return DataRow(cells: <DataCell>[
+        DataCell(Text(
+          (getNameFromStatus(currentData['status']) == "Semua") ? "Pending" : getNameFromStatus(currentData['status']),
+          style: TextStyle(color: setStatusColor(currentData['status'])),
+          textAlign: TextAlign.center,
+        )),
+        DataCell(Text((currentData['user'] == null)
+            ? "Unknown"
+            : truncateAndCapitalizeLastWord(currentData['user']['name'], maxLength: 10))),
+        DataCell(Text(currentData['tipe_izin'])),
+        DataCell(TextButton(
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => DetailIzinPage(data: currentData)));
+          },
+          style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.yellow)),
+          child: const Text("Detail", style: TextStyle(color: Colors.white)),
+        )),
+      ]);
+    }).toList();
+
+    var page = data['data'];
+
+    // Handle element pagination
+    late List<Widget> paginate;
+    late MainAxisAlignment handleMainAxis;
+
+    if (page['next_page_url'] != null && page['prev_page_url'] != null) {
+      handleMainAxis = MainAxisAlignment.spaceBetween;
+      paginate = [
+        TextButton(
+            onPressed: () {
+              handlePaginate(page['prev_page_url']);
+            },
+            child: const Text("<< Next")),
+        TextButton(
+            onPressed: () {
+              handlePaginate(page['next_page_url']);
+            },
+            child: const Text("Prev>>"))
+      ];
+    } else if (page['prev_page_url'] != null) {
+      handleMainAxis = MainAxisAlignment.start;
+      paginate = [
+        TextButton(
+            onPressed: () {
+              handlePaginate(page['prev_page_url']);
+            },
+            child: const Text("<< Next"))
+      ];
+    } else if (page['next_page_url'] != null) {
+      handleMainAxis = MainAxisAlignment.end;
+      paginate = [
+        TextButton(
+            onPressed: () {
+              handlePaginate(page['next_page_url']);
+            },
+            child: const Text("Prev>>"))
+      ];
+    } else {
+      handleMainAxis = MainAxisAlignment.start;
+      paginate = [TextButton(onPressed: () {}, child: const Text(""))];
+    }
+
     return Column(
       children: [
-        FormBuilder(
-            child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 5),
-          child: FormBuilderDropdown(
-            name: 'tipe_data',
-            initialValue: selectedValue,
-            items: ['Semua', 'Disetujui', 'Ditolak'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
-            onChanged: (value) {
-              setState(() {
-                selectedValue = value.toString();
-                setStatus = getStatus(value.toString());
-              });
-            },
-          ),
-        )),
-        FutureBuilder(
-            future: IzinModel.getData(changeUrl: changeIzin),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Text("Error: ${snapshot.error}");
-              } else {
-                List<DataRow> dataRow = (snapshot.data['izin']['data']['data'] as List).asMap().entries.map((entry) {
-                  var data = entry.value;
-
-                  Color? setStatusColor() {
-                    switch (data['status']) {
-                      case '1':
-                        return Colors.green;
-                      case '2':
-                        return Colors.red;
-                      default:
-                        return Colors.black;
-                    }
-                  }
-
-                  return DataRow(cells: <DataCell>[
-                    DataCell(Text(
-                      formatDate(data['created_at'], format: 'dd MMM'),
-                      style: TextStyle(color: setStatusColor()) , textAlign: TextAlign.center,
-                    )),
-                    DataCell(Text((data['user'] == null)
-                        ? "Unknown"
-                        : truncateAndCapitalizeLastWord(data['user']['name'], maxLength: 10))),
-                    DataCell(Text(data['tipe_izin'])),
-                    DataCell(TextButton(
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => DetailIzinPage(data: data)));
-                      },
-                      style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.yellow)),
-                      child: const Text("Detail", style: TextStyle(color: Colors.white)),
-                    )),
-                  ]);
-                }).toList();
-
-                var page = snapshot.data['izin']['data'];
-                if (snapshot.data['izin']['data']['data'].isEmpty) {
-                  return Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text("Belum ada yang izin pada ${page['per_page']} data terakhir..."),
-                  );
-                }
-
-                // Handle element pagination
-                late List<Widget> paginate;
-                late MainAxisAlignment handleMainAxis;
-
-                if (page['next_page_url'] != null && page['prev_page_url'] != null) {
-                  handleMainAxis = MainAxisAlignment.spaceBetween;
-                  paginate = [
-                    TextButton(
-                        onPressed: () {
-                          setState(() {
-                            changeIzin = Uri.parse(page['prev_page_url']);
-                          });
-                        },
-                        child: const Text("<< Prev")),
-                    TextButton(
-                        onPressed: () {
-                          setState(() {
-                            changeIzin = Uri.parse(page['next_page_url']);
-                          });
-                        },
-                        child: const Text("Next>>"))
-                  ];
-                } else if (page['prev_page_url'] != null) {
-                  handleMainAxis = MainAxisAlignment.start;
-                  paginate = [
-                    TextButton(
-                        onPressed: () {
-                          setState(() {
-                            changeIzin = Uri.parse(page['prev_page_url']);
-                          });
-                        },
-                        child: const Text("<< Prev"))
-                  ];
-                } else if (page['next_page_url'] != null) {
-                  handleMainAxis = MainAxisAlignment.end;
-                  paginate = [
-                    TextButton(
-                        onPressed: () {
-                          setState(() {
-                            changeIzin = Uri.parse(page['next_page_url']);
-                          });
-                        },
-                        child: const Text("Next>>"))
-                  ];
-                } else {
-                  handleMainAxis = MainAxisAlignment.start;
-                  paginate = [TextButton(onPressed: () {}, child: const Text(""))];
-                }
-
-                return Column(
-                  children: [
-                    DataTable(columns: const <DataColumn>[
-                      DataColumn(
-                          label: Expanded(
-                              child: Text(
-                        "#",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ))),
-                      DataColumn(
-                          label: Expanded(
-                              child: Text(
-                        "Nama",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ))),
-                      DataColumn(
-                          label: Expanded(
-                              child: Text(
-                        "Tipe",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ))),
-                      DataColumn(
-                          label: Expanded(
-                              child: Text(
-                        "Aksi",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ))),
-                    ], rows: dataRow),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(mainAxisAlignment: handleMainAxis, children: paginate),
-                    )
-                  ],
-                );
-              }
-            }),
+        Row(
+          children: [
+            Expanded(
+              child: FormBuilder(
+                  child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                ),
+                child: FormBuilderDropdown(
+                  name: 'tipe_data',
+                  initialValue: namaKelompok,
+                  items: (data['kelompok'] as List).map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+                  onChanged: (value) {
+                    handleChangeKelompok(value.toString());
+                  },
+                ),
+              )),
+            ),
+            Expanded(
+              child: FormBuilder(
+                  child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: FormBuilderDropdown(
+                  name: 'tipe_data',
+                  initialValue: statusIni,
+                  items: ['Semua', 'Disetujui', 'Ditolak'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+                  onChanged: (value) {
+                    handleChangeStatus(getStatus(value.toString()));
+                  },
+                ),
+              )),
+            )
+          ],
+        ),
+        Column(
+          children: [
+            DataTable(columns: const <DataColumn>[
+              DataColumn(
+                  label: Expanded(
+                      child: Text(
+                "#",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ))),
+              DataColumn(
+                  label: Expanded(
+                      child: Text(
+                "Nama",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ))),
+              DataColumn(
+                  label: Expanded(
+                      child: Text(
+                "Tipe",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ))),
+              DataColumn(
+                  label: Expanded(
+                      child: Text(
+                "Aksi",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ))),
+            ], rows: dataRow),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(mainAxisAlignment: handleMainAxis, children: paginate),
+            )
+          ],
+        )
       ],
     );
   }

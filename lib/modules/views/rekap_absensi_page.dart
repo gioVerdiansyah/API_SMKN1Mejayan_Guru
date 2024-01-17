@@ -59,66 +59,60 @@ class _RekapAbsensiView extends State<RekapAbsensiPage> {
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
             child: Center(
-              child: Column(
-                children: [
-                  Text(
-                    getDateNow(),
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                  ),
-                  Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: FutureBuilder(
-                          future: AbsenModel.getData(changeUrl: changeUrl),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return const Center(child: CircularProgressIndicator());
-                            } else if (snapshot.hasError) {
-                              return Text("Error: ${snapshot.error}");
-                            } else {
-                              if (snapshot.data['kelompok'].isEmpty) {
-                                return Text("Anda belum mempunyai kelompok untuk di urus");
-                              } else {
-                                return Column(
-                                  children: [
-                                    Card(
-                                      child: DataTableAbsenComponent(
-                                          hasAbsen: handleHasAbsen, data: snapshot.data, changeUrl: handleChangeUrl),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 10),
-                                      child: Card(
-                                        child: TextButton.icon(
-                                            onPressed: () {
-                                              launchUrl(ApiRoutes.cetakRekabAbsenRoute);
-                                            },
-                                            icon: const Icon(Icons.print, color: Colors.white),
-                                            label: const Text(
-                                                "Cetak "
-                                                "data absensi",
-                                                style: TextStyle(color: Colors.white)),
-                                            style: const ButtonStyle(
-                                                backgroundColor: MaterialStatePropertyAll(Colors.yellow))),
-                                      ),
-                                    ),
-                                    if (hasAbsen)
-                                      Card(
-                                          child: Column(
-                                        children: [
-                                          const Padding(
-                                            padding: EdgeInsets.all(8.0),
-                                            child: Text("Siswa yang belum absen",
-                                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-                                          ),
-                                          DataTableDoesntAbsenComponent(namaKelompok: snapshot.data['kelompok_ini']),
-                                        ],
-                                      ))
-                                  ],
-                                );
-                              }
-                            }
-                          }))
-                ],
-              ),
+              child: FutureBuilder(
+                  future: AbsenModel.getData(changeUrl: changeUrl),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Text("Error: ${snapshot.error}");
+                    } else {
+                      if (snapshot.data['kelompok'] == null || snapshot.data['kelompok'].isEmpty) {
+                        return const Center(child: Text("Anda belum mempunyai kelompok untuk di urus"));
+                      } else {
+                        return Column(
+                          children: [
+                            Text(
+                              getDateNow(),
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                            ),
+                            Card(
+                              child: DataTableAbsenComponent(
+                                  hasAbsen: handleHasAbsen, data: snapshot.data, changeUrl: handleChangeUrl),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: Card(
+                                child: TextButton.icon(
+                                    onPressed: () {
+                                      launchUrl(ApiRoutes.cetakRekabAbsenRoute);
+                                    },
+                                    icon: const Icon(Icons.print, color: Colors.white),
+                                    label: const Text(
+                                        "Cetak "
+                                        "data absensi",
+                                        style: TextStyle(color: Colors.white)),
+                                    style: const ButtonStyle(
+                                        backgroundColor: MaterialStatePropertyAll(Colors.yellow))),
+                              ),
+                            ),
+                            if (hasAbsen)
+                              Card(
+                                  child: Column(
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text("Siswa yang belum absen",
+                                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                                  ),
+                                  DataTableDoesntAbsenComponent(namaKelompok: snapshot.data['kelompok_ini']),
+                                ],
+                              ))
+                          ],
+                        );
+                      }
+                    }
+                  }),
             ),
           ),
         ),
@@ -175,11 +169,7 @@ class _FetchingDataFragment extends State<DataTableAbsenComponent> {
 
   @override
   Widget build(BuildContext context) {
-    // if (data['data'].isEmpty) {
-    //   return Text("Belum Ada yang absen pada hari ini");
-    // } else {
     List<DataRow> dataRow = (data['data'] as List).asMap().entries.map((entry) {
-      var index = entry.key + 1;
       var dataIni = entry.value;
 
       return DataRow(cells: <DataCell>[
@@ -208,7 +198,7 @@ class _FetchingDataFragment extends State<DataTableAbsenComponent> {
             },
           ),
         )),
-        Text(data['hari'] > 0 ? konversiTanggal(data['hari']) : ''),
+        Text(convertDayFromNumber(data['hari'])),
         DataTable(columns: const <DataColumn>[
           DataColumn(
               label: Expanded(
