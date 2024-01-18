@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:pkl_smkn1mejayan_guru/modules/views/detail_jurnal.dart';
+import 'package:pkl_smkn1mejayan_guru/modules/views/edit_profile_page.dart';
 import 'package:pkl_smkn1mejayan_guru/modules/views/home_page.dart';
 import 'package:pkl_smkn1mejayan_guru/modules/views/rekap_absensi_page.dart';
 
@@ -27,6 +28,7 @@ class AppRoute{
   static const String rekapAbsensi = RekapAbsensiPage.routeName;
   static const String rekapJurnal = RekapJurnalPage.routeName;
   static const String rekapIzin = RekapIzinPage.routeName;
+  static const String editProfile = EditProfilePage.routeName;
 
   static Map<String, WidgetBuilder> routes={
     homeRoute: (context) => HomePage(),
@@ -34,5 +36,6 @@ class AppRoute{
     rekapAbsensi: (context) => RekapAbsensiPage(),
     rekapJurnal: (context) => RekapJurnalPage(),
     rekapIzin: (context) => RekapIzinPage(),
+    editProfile: (context) => EditProfilePage(),
   };
 }

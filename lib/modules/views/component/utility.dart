@@ -39,19 +39,9 @@ String getDay() {
 
 Widget checkStatus(data, childData) {
   if(childData['status'] == '2' || childData['status'] == '5') {
-    String? jamDatang = childData['datang'];
-    print("DATANYA: ${jamDatang}");
+    String waktuTelat = DateFormat('HH:mm').format(DateFormat('HH:mm:ss').parse(childData['telat']));
 
-    String jamPerusahaan = data['dudi'][getDay()]!.split(' - ')[0];
-    print("DATANYA: ${jamPerusahaan}");
-
-    String waktuDatangEncode = DateFormat('H:m').format(DateTime.parse(jamDatang!));
-    DateTime waktuDatang = DateFormat('H:m').parse(waktuDatangEncode);
-    DateTime waktuPerusahaan = DateFormat.Hm().parse(jamPerusahaan);
-
-    Duration selisihWaktu = waktuDatang.difference(waktuPerusahaan);
-
-      return Text("${capitalizeFirstLetter(childData['status'])} ${selisihWaktu.inMinutes} mnt");
+    return Text("${capitalizeFirstLetter(childData['status'])} $waktuTelat");
   }else{
     return Text(capitalizeFirstLetter(childData['status']));
   }

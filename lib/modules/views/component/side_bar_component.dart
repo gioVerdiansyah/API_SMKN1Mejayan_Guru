@@ -78,15 +78,23 @@ class _SideBarView extends State<SideBarComponent> {
             onTap: () {
               NavigasiKe(AppRoute.rekapAbsensi);
             },
-          ),ListTile(
+          ),
+          ListTile(
             title: const Text("Rekap Jurnal"),
             onTap: () {
               NavigasiKe(AppRoute.rekapJurnal);
             },
-          ),ListTile(
+          ),
+          ListTile(
             title: const Text("Rekap Izin"),
             onTap: () {
               NavigasiKe(AppRoute.rekapIzin);
+            },
+          ),
+          ListTile(
+            title: const Text("Edit Profile"),
+            onTap: () {
+              NavigasiKe(AppRoute.editProfile);
             },
           ),
           ListTile(

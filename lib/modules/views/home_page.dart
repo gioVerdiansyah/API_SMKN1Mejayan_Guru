@@ -26,7 +26,7 @@ class _HomeView extends State<HomePage> with TickerProviderStateMixin {
 
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 1),
+      duration: const Duration(seconds: 1),
     );
 
     _opacityAnimation = Tween<double>(
@@ -62,7 +62,7 @@ class _HomeView extends State<HomePage> with TickerProviderStateMixin {
                         ),
                         Text(
                           "${truncateAndCapitalizeLastWord(guru['nama'])}" " ${guru['gelar']}",
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -73,10 +73,10 @@ class _HomeView extends State<HomePage> with TickerProviderStateMixin {
                         fontWeight: FontWeight.w300,
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20),
-                      child: const Text(
-                        "Fitur Aplikasi",
+                    const Padding(
+                      padding: EdgeInsets.only(top: 20),
+                      child: Text(
+                        "Fitur Utama Aplikasi",
                         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                       ),
                     )
@@ -84,7 +84,7 @@ class _HomeView extends State<HomePage> with TickerProviderStateMixin {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(top: 30),
+                padding: const EdgeInsets.only(top: 30),
                 child: Column(
                   children: [
                     Row(
