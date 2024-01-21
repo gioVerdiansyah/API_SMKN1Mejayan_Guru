@@ -55,9 +55,24 @@ class _RekapAbsensiView extends State<RekapAbsensiPage> {
       appBar: const AppBarComponent(),
       drawer: const SideBarComponent(),
       body: ListView(children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Column(
+            children: [
+              const Text("Rekap Absensi", style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18
+              ),),
+              Text(
+                getDateNow(),
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+            ],
+          ),
+        ),
         Container(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
+            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
             child: Center(
               child: FutureBuilder(
                   future: AbsenModel.getData(changeUrl: changeUrl),
@@ -72,10 +87,6 @@ class _RekapAbsensiView extends State<RekapAbsensiPage> {
                       } else {
                         return Column(
                           children: [
-                            Text(
-                              getDateNow(),
-                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                            ),
                             Card(
                               child: DataTableAbsenComponent(
                                   hasAbsen: handleHasAbsen, data: snapshot.data, changeUrl: handleChangeUrl),
@@ -92,8 +103,7 @@ class _RekapAbsensiView extends State<RekapAbsensiPage> {
                                         "Cetak "
                                         "data absensi",
                                         style: TextStyle(color: Colors.white)),
-                                    style: const ButtonStyle(
-                                        backgroundColor: MaterialStatePropertyAll(Colors.yellow))),
+                                    style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.yellow))),
                               ),
                             ),
                             if (hasAbsen)

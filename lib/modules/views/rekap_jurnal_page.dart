@@ -55,9 +55,24 @@ class _RekapJurnalView extends State<RekapJurnalPage> {
       appBar: const AppBarComponent(),
       drawer: const SideBarComponent(),
       body: ListView(children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Column(
+            children: [
+              const Text(
+                "Rekap Jurnal",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+              Text(
+                getDateNow(),
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+            ],
+          ),
+        ),
         Container(
           child: Padding(
-            padding: EdgeInsets.fromLTRB(20, 30, 20, 20),
+            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
             child: Center(
               child: FutureBuilder(
                 future: JurnalModel.getData(changeUrl),
@@ -71,10 +86,6 @@ class _RekapJurnalView extends State<RekapJurnalPage> {
                   } else {
                     return Column(
                       children: [
-                        Text(
-                          getDateNow(),
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                        ),
                         Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Container(
@@ -184,8 +195,10 @@ class _FetchingDataJurnalFragment extends State<DataTableJurnalComponent> {
         return 'Disetujui';
       case '2':
         return 'Ditolak';
-      default:
+      case '0':
         return 'Semua';
+      default:
+        return 'Tidak mengisi';
     }
   }
 
@@ -195,8 +208,10 @@ class _FetchingDataJurnalFragment extends State<DataTableJurnalComponent> {
         return Colors.green;
       case '2':
         return Colors.red;
-      default:
+      case '0':
         return Colors.yellow;
+      default:
+        return Colors.brown;
     }
   }
 

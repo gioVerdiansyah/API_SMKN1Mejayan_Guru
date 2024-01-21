@@ -31,42 +31,55 @@ class _RekapJurnalView extends State<RekapIzinPage> {
     return Scaffold(
       appBar: const AppBarComponent(),
       drawer: const SideBarComponent(),
-      body: Container(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
-            child: FutureBuilder(
-              future: IzinModel.getData(changeUrl: changeUrl),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Text("Error: ${snapshot.error}");
-                } else if (snapshot.data['kelompok'] == null || snapshot.data['kelompok'].isEmpty) {
-                  return const Text("Anda belum mempunyai kelompok untuk di urus");
-                } else {
-                  return Column(children: [
-                    Text(
-                      getDateNow(),
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                    ),
-                    Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Card(
-                            child: DataTabeleIzinComponent(data: snapshot.data, changeUrl: handleChangeUrl),
+      body: ListView(children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Column(
+            children: [
+              const Text(
+                "Rekap Izin",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+              Text(
+                getDateNow(),
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+              child: FutureBuilder(
+                future: IzinModel.getData(changeUrl: changeUrl),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Text("Error: ${snapshot.error}");
+                  } else if (snapshot.data['kelompok'] == null || snapshot.data['kelompok'].isEmpty) {
+                    return const Text("Anda belum mempunyai kelompok untuk di urus");
+                  } else {
+                    return Column(children: [
+                      Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Card(
+                              child: DataTabeleIzinComponent(data: snapshot.data, changeUrl: handleChangeUrl),
+                            ),
                           ),
-                        ),
-                      ],
-                    )
-                  ]);
-                }
-              },
+                        ],
+                      )
+                    ]);
+                  }
+                },
+              ),
             ),
           ),
         ),
-      ),
+      ]),
     );
   }
 }

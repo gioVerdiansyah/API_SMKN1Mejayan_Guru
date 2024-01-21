@@ -46,8 +46,17 @@ class _DetailJurnalView extends State<DetailJurnalPage> {
                           const Text("Bukti Jurnal:", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                           Center(
                             child: Container(
-                                decoration: BoxDecoration(border: Border.all(color: Colors.green, width: 2)),
-                                child: Image.network("${dotenv.get("STORAGE_URL")}/${data['bukti']}", width: 200)),
+                                decoration: BoxDecoration(
+                                  border: data['bukti'] != null
+                                      ? Border.all(
+                                    color: Colors.green,
+                                    width: 2,
+                                  )
+                                      : null,
+                                ),
+                                child: (data['bukti'] == null)
+                                    ? const Text('No Image...')
+                                    : Image.network("${dotenv.get("STORAGE_URL")}/${data['bukti']}", width: 200)),
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 10),
@@ -72,156 +81,167 @@ class _DetailJurnalView extends State<DetailJurnalPage> {
                                     ],
                                   ),
                                 ),
-                                const Divider(
-                                  color: Colors.green,
-                                  thickness: 2,
-                                ),
-                                const Center(
-                                    child: Text(
-                                  "Persetujuan Anda",
-                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                                )),
-                                (data['status'] == '0')
-                                    ? Padding(
-                                        padding: const EdgeInsets.only(top: 15),
-                                        child: FormBuilder(
-                                          key: _formKey,
-                                          child: Column(
-                                            children: [
-                                              FormBuilderTextField(
-                                                name: 'textareafiled',
-                                                maxLines: 5,
-                                                decoration: const InputDecoration(
-                                                  labelText: "Keterangan (opsional)",
-                                                  hintText: 'Alasan Anda menyetujui atau menolaknya',
-                                                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                                                  enabledBorder: OutlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                      color: Colors.green,
-                                                      width: 2.0,
-                                                    ),
-                                                  ),
-                                                ),
-                                                controller: keterangan,
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(top: 20),
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                if (data['status'] != '3')
+                                  Column(
+                                    children: [
+                                      const Divider(
+                                        color: Colors.green,
+                                        thickness: 2,
+                                      ),
+                                      const Center(
+                                          child: Text(
+                                        "Persetujuan Anda",
+                                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                      )),
+                                      (data['status'] == '0')
+                                          ? Padding(
+                                              padding: const EdgeInsets.only(top: 15),
+                                              child: FormBuilder(
+                                                key: _formKey,
+                                                child: Column(
                                                   children: [
-                                                    TextButton.icon(
-                                                        onPressed: () async {
-                                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                                            content: const Text('Processing Data'),
-                                                            backgroundColor: Colors.green.shade300,
-                                                          ));
-                                                          var response = await JurnalModel.agreementJurnal(
-                                                              data['id'], keterangan.text, 1);
-                                                          if (response['success']) {
-                                                            if (context.mounted) {
-                                                              ArtSweetAlert.show(
-                                                                  context: context,
-                                                                  artDialogArgs: ArtDialogArgs(
-                                                                      type: ArtSweetAlertType.success,
-                                                                      title: "Berhasil!",
-                                                                      text: response['message'],
-                                                                      onConfirm: () {
-                                                                        Navigator.pushNamed(context, AppRoute.rekapJurnal);
-                                                                      }),
-                                                                  barrierDismissible: false);
-                                                            }
-                                                          } else {
-                                                            if (context.mounted) {
-                                                              ArtSweetAlert.show(
-                                                                context: context,
-                                                                artDialogArgs: ArtDialogArgs(
-                                                                  type: ArtSweetAlertType.danger,
-                                                                  title: "Gagal!",
-                                                                  text: response['message'],
-                                                                ),
-                                                              );
-                                                            }
-                                                          }
-                                                        },
-                                                        icon: const Icon(Icons.check_circle_outline, color: Colors.white),
-                                                        label: const Padding(
-                                                          padding: EdgeInsets.all(10),
-                                                          child: Text("Setujui", style: TextStyle(color: Colors.white)),
+                                                    FormBuilderTextField(
+                                                      name: 'textareafiled',
+                                                      maxLines: 5,
+                                                      decoration: const InputDecoration(
+                                                        labelText: "Keterangan (opsional)",
+                                                        hintText: 'Alasan Anda menyetujui atau menolaknya',
+                                                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                                                        enabledBorder: OutlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                            color: Colors.green,
+                                                            width: 2.0,
+                                                          ),
                                                         ),
-                                                        style: const ButtonStyle(
-                                                            backgroundColor: MaterialStatePropertyAll(Colors.green))),
-                                                    TextButton.icon(
-                                                        onPressed: () async {
-                                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                                            content: const Text('Processing Data'),
-                                                            backgroundColor: Colors.green.shade300,
-                                                          ));
-                                                          var response = await JurnalModel.agreementJurnal(
-                                                              data['id'], keterangan.text, 2);
-                                                          if (response['success']) {
-                                                            if (context.mounted) {
-                                                              ArtSweetAlert.show(
-                                                                  context: context,
-                                                                  artDialogArgs: ArtDialogArgs(
-                                                                      type: ArtSweetAlertType.success,
-                                                                      title: "Berhasil!",
-                                                                      text: response['message'],
-                                                                      onConfirm: () {
-                                                                        Navigator.pushNamed(context, AppRoute.rekapJurnal);
-                                                                      }),
-                                                                  barrierDismissible: false);
-                                                            }
-                                                          } else {
-                                                            if (context.mounted) {
-                                                              ArtSweetAlert.show(
-                                                                context: context,
-                                                                artDialogArgs: ArtDialogArgs(
-                                                                  type: ArtSweetAlertType.danger,
-                                                                  title: "Gagal!",
-                                                                  text: response['message'],
-                                                                ),
-                                                              );
-                                                            }
-                                                          }
-                                                        },
-                                                        icon: const Icon(Icons.close_rounded, color: Colors.white),
-                                                        label: const Padding(
-                                                          padding: EdgeInsets.all(10),
-                                                          child: Text("Tolak", style: TextStyle(color: Colors.white)),
-                                                        ),
-                                                        style: const ButtonStyle(
-                                                            backgroundColor: MaterialStatePropertyAll(Colors.red))),
+                                                      ),
+                                                      controller: keterangan,
+                                                    ),
+                                                    Padding(
+                                                      padding: const EdgeInsets.only(top: 20),
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                        children: [
+                                                          TextButton.icon(
+                                                              onPressed: () async {
+                                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                  content: const Text('Processing Data'),
+                                                                  backgroundColor: Colors.green.shade300,
+                                                                ));
+                                                                var response = await JurnalModel.agreementJurnal(
+                                                                    data['id'], keterangan.text, 1);
+                                                                if (response['success']) {
+                                                                  if (context.mounted) {
+                                                                    ArtSweetAlert.show(
+                                                                        context: context,
+                                                                        artDialogArgs: ArtDialogArgs(
+                                                                            type: ArtSweetAlertType.success,
+                                                                            title: "Berhasil!",
+                                                                            text: response['message'],
+                                                                            onConfirm: () {
+                                                                              Navigator.pushNamed(
+                                                                                  context, AppRoute.rekapJurnal);
+                                                                            }),
+                                                                        barrierDismissible: false);
+                                                                  }
+                                                                } else {
+                                                                  if (context.mounted) {
+                                                                    ArtSweetAlert.show(
+                                                                      context: context,
+                                                                      artDialogArgs: ArtDialogArgs(
+                                                                        type: ArtSweetAlertType.danger,
+                                                                        title: "Gagal!",
+                                                                        text: response['message'],
+                                                                      ),
+                                                                    );
+                                                                  }
+                                                                }
+                                                              },
+                                                              icon: const Icon(Icons.check_circle_outline,
+                                                                  color: Colors.white),
+                                                              label: const Padding(
+                                                                padding: EdgeInsets.all(10),
+                                                                child:
+                                                                    Text("Setujui", style: TextStyle(color: Colors.white)),
+                                                              ),
+                                                              style: const ButtonStyle(
+                                                                  backgroundColor:
+                                                                      MaterialStatePropertyAll(Colors.green))),
+                                                          TextButton.icon(
+                                                              onPressed: () async {
+                                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                  content: const Text('Processing Data'),
+                                                                  backgroundColor: Colors.green.shade300,
+                                                                ));
+                                                                var response = await JurnalModel.agreementJurnal(
+                                                                    data['id'], keterangan.text, 2);
+                                                                if (response['success']) {
+                                                                  if (context.mounted) {
+                                                                    ArtSweetAlert.show(
+                                                                        context: context,
+                                                                        artDialogArgs: ArtDialogArgs(
+                                                                            type: ArtSweetAlertType.success,
+                                                                            title: "Berhasil!",
+                                                                            text: response['message'],
+                                                                            onConfirm: () {
+                                                                              Navigator.pushNamed(
+                                                                                  context, AppRoute.rekapJurnal);
+                                                                            }),
+                                                                        barrierDismissible: false);
+                                                                  }
+                                                                } else {
+                                                                  if (context.mounted) {
+                                                                    ArtSweetAlert.show(
+                                                                      context: context,
+                                                                      artDialogArgs: ArtDialogArgs(
+                                                                        type: ArtSweetAlertType.danger,
+                                                                        title: "Gagal!",
+                                                                        text: response['message'],
+                                                                      ),
+                                                                    );
+                                                                  }
+                                                                }
+                                                              },
+                                                              icon: const Icon(Icons.close_rounded, color: Colors.white),
+                                                              label: const Padding(
+                                                                padding: EdgeInsets.all(10),
+                                                                child:
+                                                                    Text("Tolak", style: TextStyle(color: Colors.white)),
+                                                              ),
+                                                              style: const ButtonStyle(
+                                                                  backgroundColor: MaterialStatePropertyAll(Colors.red))),
+                                                        ],
+                                                      ),
+                                                    ),
                                                   ],
                                                 ),
                                               ),
-                                            ],
-                                          ),
-                                        ),
-                                      )
-                                    : Padding(
-                                        padding: const EdgeInsets.only(top: 10),
-                                        child: Column(
-                                          children: [
-                                            Row(
-                                              children: [
-                                                const Text("Jurnal telah "),
-                                                Text((data['status'] == '1') ? 'disetujui' : 'ditolak',
-                                                    style: const TextStyle(fontWeight: FontWeight.bold)),
-                                              ],
-                                            ),
-                                            const Text(
-                                              "Catatan Anda:",
-                                              style: TextStyle(fontWeight: FontWeight.bold),
-                                            ),
-                                            (data['keterangan'] != null)
-                                                ? DescriptionText(
-                                                    alasan: data['keterangan'],
-                                                    maxLength: 400,
-                                                  )
-                                                : const Text("Tidak ada catatan...")
-                                          ],
-                                        ),
-                                      )
+                                            )
+                                          : Padding(
+                                              padding: const EdgeInsets.only(top: 10),
+                                              child: Column(
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      const Text("Jurnal telah "),
+                                                      Text((data['status'] == '1') ? 'disetujui' : 'ditolak',
+                                                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                                                    ],
+                                                  ),
+                                                  const Text(
+                                                    "Catatan Anda:",
+                                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                                  ),
+                                                  (data['keterangan'] != null)
+                                                      ? DescriptionText(
+                                                          alasan: data['keterangan'],
+                                                          maxLength: 400,
+                                                        )
+                                                      : const Text("Tidak ada catatan...")
+                                                ],
+                                              ),
+                                            )
+                                    ],
+                                  )
                               ],
                             ),
                           )
