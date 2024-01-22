@@ -5,6 +5,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:pkl_smkn1mejayan_guru/modules/views/component/app_bar_component.dart';
 import 'package:pkl_smkn1mejayan_guru/modules/views/component/description_text_component.dart';
 import 'package:pkl_smkn1mejayan_guru/modules/views/component/utility.dart';
+import 'package:pkl_smkn1mejayan_guru/modules/views/rekap_izin_page.dart';
 import 'package:pkl_smkn1mejayan_guru/routes/app_route.dart';
 
 import '../../model/izin_model.dart';
@@ -191,10 +192,69 @@ class _DetailIzinView extends State<DetailIzinPage> {
                                                           child: Text("Tolak", style: TextStyle(color: Colors.white)),
                                                         ),
                                                         style: const ButtonStyle(
-                                                            backgroundColor: MaterialStatePropertyAll(Colors.red))),
+                                                            backgroundColor: MaterialStatePropertyAll(Colors.deepOrange))),
                                                   ],
                                                 ),
                                               ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(top: 15),
+                                                child: TextButton.icon(
+                                                    onPressed: () async {
+                                                      ArtDialogResponse response = await ArtSweetAlert.show(
+                                                          barrierDismissible: false,
+                                                          context: context,
+                                                          artDialogArgs: ArtDialogArgs(
+                                                              denyButtonText: "Cancel",
+                                                              title: "Apakah Anda yakin?",
+                                                              text:
+                                                                  "Menolak paksa akan membuat absen siswa yang izin di atas "
+                                                                  "akan "
+                                                                  "menjadi ALPHA!",
+                                                              confirmButtonText: "Yes",
+                                                              type: ArtSweetAlertType.warning));
+
+                                                      if (response == null) {
+                                                        return;
+                                                      }
+
+                                                      if (response.isTapConfirmButton) {
+                                                        var response = await IzinModel.tolakPaksa(data['id']);
+                                                        if (response['success']) {
+                                                          ArtSweetAlert.show(
+                                                              context: context,
+                                                              artDialogArgs: ArtDialogArgs(
+                                                                type: ArtSweetAlertType.success,
+                                                                title: "Berhasil!",
+                                                                text: response['message'],
+                                                                onConfirm: () {
+                                                                  Navigator.pushAndRemoveUntil(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder: (context) => RekapIzinPage()),
+                                                                    (route) => false,
+                                                                  );
+                                                                },
+                                                              ));
+                                                        } else {
+                                                          ArtSweetAlert.show(
+                                                              context: context,
+                                                              artDialogArgs: ArtDialogArgs(
+                                                                type: ArtSweetAlertType.danger,
+                                                                title: "Gagal!",
+                                                                text: response['message'],
+                                                              ));
+                                                        }
+                                                        return;
+                                                      }
+                                                    },
+                                                    icon: Icon(Icons.close_rounded, color: Colors.white),
+                                                    label: const Padding(
+                                                      padding: EdgeInsets.all(10),
+                                                      child: Text("Tolak Paksa", style: TextStyle(color: Colors.white)),
+                                                    ),
+                                                    style: const ButtonStyle(
+                                                        backgroundColor: MaterialStatePropertyAll(Colors.red))),
+                                              )
                                             ],
                                           ),
                                         ),

@@ -63,7 +63,8 @@ class _DetailJurnalView extends State<DetailJurnalPage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text("Kegiatan:", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                                const Text("Uraian Kegiatan:", style: TextStyle(fontSize: 15, fontWeight: FontWeight
+                                    .bold)),
                                 DescriptionText(
                                   alasan: data['kegiatan'],
                                   maxLength: 400,

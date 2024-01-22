@@ -31,4 +31,28 @@ class IzinModel {
       return {'success': false, 'message': "Ada kesalahan aplikasi!"};
     }
   }
+
+  static Future tolakPaksa(String izinId) async {
+    try{
+      Uri url = ApiRoutes.tolakPaksaIzinRoute;
+      var response = await http.post(url,
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': ApiRoutes.API_KEY
+        },
+        body: json.encode({
+          'izin_id': izinId
+        })
+      );
+
+      var data = json.decode(response.body);
+      print(data);
+      return data;
+    }catch(e){
+      return {
+        'success': false,
+        'message': "Ada kesalahan Aplikasi!"
+      };
+    }
+  }
 }

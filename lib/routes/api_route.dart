@@ -13,6 +13,7 @@ class ApiRoutes {
   static final Uri cetakRekabAbsenRoute = Uri.parse("${dotenv.get('APP_URL')}/guru/$guruId/absen/print");
   static final Uri updateStatusJurnalRoute = Uri.parse("${dotenv.get('API_URL')}/$guruId/jurnal/agreement");
   static final Uri updateStatusIzinRoute = Uri.parse("${dotenv.get('API_URL')}/$guruId/izin/agreement");
+  static final Uri tolakPaksaIzinRoute = Uri.parse("${dotenv.get('API_URL')}/$guruId/izin/tolak-paksa");
   static final Uri getDataDoesntJurnal = Uri.parse("${dotenv.get('API_URL')}/$guruId/jurnal/reject");
   static final Uri getDataDoesntAbsen = Uri.parse("${dotenv.get('API_URL')}/$guruId/absensi/reject");
   static final Uri getDataIzinRoute = Uri.parse("${dotenv.get('API_URL')}/$guruId/izin/get");
