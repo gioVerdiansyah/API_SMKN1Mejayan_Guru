@@ -98,6 +98,12 @@ class _SideBarView extends State<SideBarComponent> {
             },
           ),
           ListTile(
+            title: const Text("Absensi Bermasalah"),
+            onTap: () {
+              NavigasiKe(AppRoute.absenTrouble);
+            },
+          ),
+          ListTile(
             title: const Text("Logout"),
             onTap: () async {
               ArtDialogResponse response = await ArtSweetAlert.show(

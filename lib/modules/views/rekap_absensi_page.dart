@@ -185,7 +185,7 @@ class _FetchingDataFragment extends State<DataTableAbsenComponent> {
       return DataRow(cells: <DataCell>[
         DataCell(Text((dataIni['user'] == null)
             ? "Unknown"
-            : truncateAndCapitalizeLastWord(dataIni['user']['name'], maxLength: 10))),
+            : truncateAndCapitalizeLastWord(dataIni['user']['name'], maxLength: 20))),
         DataCell(checkStatus(data, dataIni)),
         DataCell(Text(formatDate(dataIni['datang']))),
         DataCell(Text((dataIni['pulang'] == null) ? '-' : formatDate(dataIni['pulang']))),
