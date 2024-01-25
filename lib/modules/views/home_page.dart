@@ -43,95 +43,92 @@ class _HomeView extends State<HomePage> with TickerProviderStateMixin {
     return Scaffold(
       appBar: const AppBarComponent(),
       drawer: const SideBarComponent(),
-      body: Container(
-        child: Center(
-            child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 30),
-          child: Column(
-            children: [
-              FadeTransition(
-                opacity: _opacityAnimation,
+      body: ListView(children: [
+        Container(
+          child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 30),
                 child: Column(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          "Selamat datang ",
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          "${truncateAndCapitalizeLastWord(guru['nama'])}" " ${guru['gelar']}",
-                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                    const Text(
-                      "Di Aplikasi rekap absensi & jurnal siswa PKL",
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w300,
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(top: 20),
-                      child: Text(
-                        "Fitur Utama Aplikasi",
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 30),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Card(
-                            child: TextButton(
-                                onPressed: () {
-                                  Navigator.pushNamed(context, AppRoute.rekapAbsensi);
-                                },
-                                child: const Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.assignment, color: Colors.black),
-                                      Text(
-                                        "Rekap Absensi",
-                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
-                                      ),
-                                    ],
-                                  ),
-                                ))),
-                        Card(
-                            child: TextButton(
-                                onPressed: () {
-                                  Navigator.pushNamed(context, AppRoute.rekapJurnal);
-                                },
-                                child: const Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.history_edu_outlined, color: Colors.black),
-                                      Text(
-                                        "Rekap Jurnal",
-                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
-                                      ),
-                                    ],
-                                  ),
-                                ))),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    FadeTransition(
+                      opacity: _opacityAnimation,
+                      child: Column(
                         children: [
-                          Card(
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                "Selamat datang ",
+                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                "${truncateAndCapitalizeLastWord(guru['nama'])}" " ${guru['gelar']}",
+                                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          const Text(
+                            "Di Aplikasi rekap absensi & jurnal siswa PKL",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w300,
+                            ),
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.only(top: 20),
+                            child: Text(
+                              "Fitur Utama Aplikasi",
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 20),
+                          child: Card(
+                              child: TextButton(
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, AppRoute.rekapAbsensi);
+                                  },
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.assignment, color: Colors.black),
+                                        Text(
+                                          "Rekap Absensi",
+                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
+                                        ),
+                                      ],
+                                    ),
+                                  ))),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 20),
+                          child: Card(
+                              child: TextButton(
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, AppRoute.rekapJurnal);
+                                  },
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.history_edu_outlined, color: Colors.black),
+                                        Text(
+                                          "Rekap Jurnal",
+                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
+                                        ),
+                                      ],
+                                    ),
+                                  ))),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 20),
+                          child: Card(
                               child: TextButton(
                                   onPressed: () {
                                     Navigator.pushNamed(context, AppRoute.rekapIzin);
@@ -148,16 +145,34 @@ class _HomeView extends State<HomePage> with TickerProviderStateMixin {
                                       ],
                                     ),
                                   ))),
-                        ],
-                      ),
-                    )
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 20),
+                          child: Card(
+                              child: TextButton(
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, AppRoute.absenTrouble);
+                                  },
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.edit_document, color: Colors.black),
+                                        Text(
+                                          "Absen Bermasalah",
+                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
+                                        ),
+                                      ],
+                                    ),
+                                  ))),
+                        )
+                      ],
+                    ),
                   ],
                 ),
-              )
-            ],
-          ),
-        )),
-      ),
+              )),
+        ),
+      ]),
     );
   }
 
