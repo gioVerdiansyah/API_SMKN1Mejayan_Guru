@@ -20,9 +20,12 @@ class EditProfilePage extends StatefulWidget {
 
 class _EditProfileView extends State<EditProfilePage> {
   final _formKey = GlobalKey<FormBuilderState>();
+
   final TextEditingController oldPassController = TextEditingController();
   final TextEditingController confirmPassController = TextEditingController();
   final TextEditingController newPassController = TextEditingController();
+  final TextEditingController newPhoneController = TextEditingController(text: GetStorage().read('dataLogin')
+  ['guru']['no_hp'].toString());
   List<PlatformFile>? photoProfileController;
   @override
   Widget build(BuildContext context) {
@@ -80,14 +83,31 @@ class _EditProfileView extends State<EditProfilePage> {
                       const Padding(
                         padding: EdgeInsets.only(top: 30),
                         child: Center(
+                          child: Text('Ubah Nomor HP', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                        ),
+                      ),
+                      FormBuilderTextField(
+                        name: 'no_hp',
+                        decoration: const InputDecoration(labelText: 'Nomor HP (62xxx)'),
+                        controller: newPhoneController,
+                        validator: (value) {
+                          if(!RegExp(r'^62\d+$').hasMatch(value!)){
+                            return "Invalid input. Must start with 62.";
+                          }
+                        },
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(top: 30),
+                        child: Center(
                           child: Text('Ubah Password', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                         ),
                       ),
                       FormBuilderTextField(
-                          name: 'oldPass',
-                          obscureText: true,
-                          decoration: const InputDecoration(labelText: 'Password Lama'),
-                          controller: oldPassController,),
+                        name: 'oldPass',
+                        obscureText: true,
+                        decoration: const InputDecoration(labelText: 'Password Lama'),
+                        controller: oldPassController,
+                      ),
                       FormBuilderTextField(
                         name: 'newPass',
                         obscureText: true,
@@ -95,10 +115,11 @@ class _EditProfileView extends State<EditProfilePage> {
                         controller: newPassController,
                       ),
                       FormBuilderTextField(
-                          name: 'confirmPass',
-                          obscureText: true,
-                          controller: confirmPassController,
-                          decoration: const InputDecoration(labelText: 'Konfirmasi Password'),),
+                        name: 'confirmPass',
+                        obscureText: true,
+                        controller: confirmPassController,
+                        decoration: const InputDecoration(labelText: 'Konfirmasi Password'),
+                      ),
                       Card(
                         margin: const EdgeInsets.only(top: 20),
                         color: Colors.green,
@@ -110,8 +131,11 @@ class _EditProfileView extends State<EditProfilePage> {
                                 backgroundColor: Colors.green.shade300,
                               ));
                               var response = await EditProfileModel.sendPost(
-                                  oldPassController.text, confirmPassController.text, newPassController.text,
-                                  photoProfileController);
+                                  oldPassController.text,
+                                  confirmPassController.text,
+                                  newPassController.text,
+                                  photoProfileController,
+                                  newPhoneController.text);
                               print(response);
                               if (response['success']) {
                                 if (context.mounted) {

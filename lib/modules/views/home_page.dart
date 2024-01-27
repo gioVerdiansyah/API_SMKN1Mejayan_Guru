@@ -157,7 +157,7 @@ class _HomeView extends State<HomePage> with TickerProviderStateMixin {
                                     padding: EdgeInsets.all(8.0),
                                     child: Row(
                                       children: [
-                                        Icon(Icons.edit_document, color: Colors.black),
+                                        Icon(Icons.troubleshoot, color: Colors.black),
                                         Text(
                                           "Absen Bermasalah",
                                           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),

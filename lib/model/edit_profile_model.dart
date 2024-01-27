@@ -6,7 +6,8 @@ import 'package:http/http.dart' as http;
 import 'package:pkl_smkn1mejayan_guru/routes/api_route.dart';
 
 class EditProfileModel {
-  static Future sendPost(String oldPass, String confirmPass, String newPass, List<PlatformFile>? bukti) async {
+  static Future sendPost(String oldPass, String confirmPass, String newPass, List<PlatformFile>? bukti, String newPhone)
+  async {
     try {
       var request = http.MultipartRequest('POST',
           ApiRoutes.editProfileRoute
@@ -16,6 +17,7 @@ class EditProfileModel {
       request.fields['oldPass'] = oldPass;
       request.fields['confirmPass'] = confirmPass;
       request.fields['newPass'] = newPass;
+      request.fields['no_hp'] = newPhone;
 
       if (bukti != null) {
         var file = bukti[0];
