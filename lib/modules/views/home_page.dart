@@ -62,7 +62,7 @@ class _HomeView extends State<HomePage> with TickerProviderStateMixin {
                                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                               ),
                               Text(
-                                "${truncateAndCapitalizeLastWord(guru['nama'])}" " ${guru['gelar']}",
+                                "${truncateAndCapitalizeLastWord(guru['nama'])}",
                                 style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                               ),
                             ],

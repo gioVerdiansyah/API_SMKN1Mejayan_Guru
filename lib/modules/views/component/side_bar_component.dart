@@ -46,7 +46,7 @@ class _SideBarView extends State<SideBarComponent> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "${truncateAndCapitalizeLastWord(guru['nama'])} ${guru['gelar']}",
+                          "${truncateAndCapitalizeLastWord(guru['nama'])}",
                           style: TextStyle(fontSize: 15, color: Colors.white),
                           textAlign: TextAlign.left,
                         ),

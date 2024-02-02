@@ -25,6 +25,8 @@ String capitalizeFirstLetter(String input) {
       return 'WFH';
     case '5':
       return 'WFH/Telat';
+    case '6':
+      return 'Izin';
     default:
       return 'Unknown';
   }
@@ -38,11 +40,11 @@ String getDay() {
 }
 
 Widget checkStatus(data, childData) {
-  if(childData['status'] == '2' || childData['status'] == '5') {
+  if (childData['status'] == '2' || childData['status'] == '5') {
     String waktuTelat = DateFormat('HH:mm').format(DateFormat('HH:mm:ss').parse(childData['telat']));
 
     return Text("${capitalizeFirstLetter(childData['status'])} $waktuTelat");
-  }else{
+  } else {
     return Text(capitalizeFirstLetter(childData['status']));
   }
 }
@@ -54,7 +56,6 @@ String truncateText(String inputText, int maxLength) {
     return inputText.substring(0, maxLength) + '...';
   }
 }
-
 
 String truncateAndCapitalizeLastWord(String text, {int? maxLength}) {
   maxLength = maxLength ?? 15;
