@@ -34,7 +34,7 @@ class _SideBarView extends State<SideBarComponent> {
               child: Row(
                 children: [
                   Image.network(
-                    "${dotenv.get("APP_URL")}/${guru['photo_guru']}",
+                    "${guru['photo_guru']}",
                     width: 75,
                     height: 75,
                   ),
