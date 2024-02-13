@@ -25,7 +25,6 @@ class LoginModel{
       var data = json.decode(response.body);
       if(data['success']){
         box.write('dataLogin', data['data']);
-        print(data);
       }
       return data;
     }catch(e){

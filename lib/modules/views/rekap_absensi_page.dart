@@ -43,7 +43,6 @@ class _RekapAbsensiView extends State<RekapAbsensiPage> {
   }
 
   void handleChangeUrl(Uri url) {
-    print(url);
     setState(() {
       changeUrl = url;
     });
@@ -266,7 +265,6 @@ class _FetchingDataDoesntAbsenFragment extends State<DataTableDoesntAbsenCompone
                 } else if (snapshot.hasError) {
                   return Text("Error: ${snapshot.error}");
                 } else {
-                  print("DATAAA: ${snapshot.data}");
                   if (snapshot.data['data'] == null || snapshot.data['data'].isEmpty) {
                     return const Padding(
                       padding: EdgeInsets.all(8.0),

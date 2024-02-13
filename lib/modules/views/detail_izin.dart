@@ -61,18 +61,35 @@ class _DetailIzinView extends State<DetailIzinPage> {
                                   alasan: data['alasan'],
                                   maxLength: 400,
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 10, bottom: 5),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text("Tanggal izin: ", style: TextStyle(color: Color.fromRGBO(52, 53, 65, 1))),
-                                      Text(
-                                        formatDate(data['created_at'], format: 'd MMMM yyyy'),
-                                        style: const TextStyle(color: Color.fromRGBO(52, 53, 65, 1)),
-                                      )
-                                    ],
-                                  ),
+                                Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 10, bottom: 5),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          const Text("Tanggal izin: ", style: TextStyle(color: Color.fromRGBO(52, 53, 65, 1))),
+                                          Text(
+                                            formatDate(data['created_at'], format: 'd MMMM yyyy'),
+                                            style: const TextStyle(color: Color.fromRGBO(52, 53, 65, 1)),
+                                          )
+                                        ],
+                                      ),
+                                    ),Padding(
+                                      padding: const EdgeInsets.only(top: 10, bottom: 5),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          const Text("Izin selama: ", style: TextStyle(color: Color.fromRGBO(52, 53, 65, 
+                                              1))),
+                                          Text(
+                                            getDifferentDayInInt(data['awal_izin'], data['akhir_izin']),
+                                            style: const TextStyle(color: Color.fromRGBO(52, 53, 65, 1)),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 const Divider(
                                   color: Colors.green,

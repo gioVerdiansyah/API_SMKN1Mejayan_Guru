@@ -67,8 +67,6 @@ class _AbsenBermasalahView extends State<AbsenBermasalahPage> {
                                 anggotaData = snapshot.data['data'];
                                 namaSiswa = anggotaData?[0];
 
-                                print(anggotaData);
-
                                 return FormBuilderDropdown(
                                   name: 'nama-siswa-1',
                                   initialValue: anggotaData?[0],

@@ -13,6 +13,21 @@ String getDateNow() {
   return formattedDate;
 }
 
+String getDifferentDayInInt(String startDate, String endDate){
+  String timeNow = DateTime.now().toString().split(" ")[1];
+  DateTime startDateParse = DateTime.parse(startDate + " " + timeNow);
+  DateTime endDateParse = DateTime.parse(endDate + " " + timeNow);
+
+  int remainingDay = endDateParse.difference(startDateParse).inDays;
+
+  return
+    (remainingDay.toString() == '0')
+  ?
+    "Sehari"
+  :
+    "$remainingDay Hari";
+}
+
 String capitalizeFirstLetter(String input) {
   switch (input) {
     case '1':

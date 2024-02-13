@@ -15,8 +15,6 @@ class NextPrevDayComponent extends StatelessWidget{
   }
   @override
   Widget build(BuildContext context){
-    print(theDay);
-    // Handle element pagination
     late List<Widget> paginate;
     late MainAxisAlignment handleMainAxis;
 
@@ -53,12 +51,11 @@ class NextPrevDayComponent extends StatelessWidget{
             child: const Text("Prev day >>"))
       ];
     } else {
-      print('kososng');
       handleMainAxis = MainAxisAlignment.start;
       paginate = [TextButton(onPressed: () {}, child: const Text("kosong"))];
     }
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.only(bottom: 8, left: 8, right: 8),
       child: Row(mainAxisAlignment: handleMainAxis, children: paginate),
     );
   }

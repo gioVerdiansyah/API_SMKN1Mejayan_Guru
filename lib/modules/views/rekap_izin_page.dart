@@ -268,32 +268,40 @@ class _FetchingDataFragment extends State<DataTabeleIzinComponent> {
         ),
         Column(
           children: [
-            DataTable(columns: const <DataColumn>[
-              DataColumn(
-                  label: Expanded(
-                      child: Text(
-                "#",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ))),
-              DataColumn(
-                  label: Expanded(
-                      child: Text(
-                "Nama",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ))),
-              DataColumn(
-                  label: Expanded(
-                      child: Text(
-                "Tipe",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ))),
-              DataColumn(
-                  label: Expanded(
-                      child: Text(
-                "Aksi",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ))),
-            ], rows: dataRow),
+            (data['data']['data'].isEmpty)
+                ? const Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: Text(
+                      "Tidak ada data...",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  )
+                : DataTable(columns: const <DataColumn>[
+                    DataColumn(
+                        label: Expanded(
+                            child: Text(
+                      "#",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ))),
+                    DataColumn(
+                        label: Expanded(
+                            child: Text(
+                      "Nama",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ))),
+                    DataColumn(
+                        label: Expanded(
+                            child: Text(
+                      "Tipe",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ))),
+                    DataColumn(
+                        label: Expanded(
+                            child: Text(
+                      "Aksi",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ))),
+                  ], rows: dataRow),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(mainAxisAlignment: handleMainAxis, children: paginate),

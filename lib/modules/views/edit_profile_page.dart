@@ -49,11 +49,12 @@ class _EditProfileView extends State<EditProfilePage> {
                       Column(
                         children: [
                           Image.network(
-                            "${dotenv.get('APP_URL')}/${GetStorage().read('dataLogin')['guru']['photo_guru']}",
+                            "${GetStorage().read('dataLogin')['guru']['photo_guru']}",
                             width: 75,
                             height: 75,
                           ),
                           FormBuilderFilePicker(
+                            withData: true,
                             name: "images",
                             allowMultiple: false,
                             maxFiles: 1,
@@ -136,7 +137,6 @@ class _EditProfileView extends State<EditProfilePage> {
                                   newPassController.text,
                                   photoProfileController,
                                   newPhoneController.text);
-                              print(response);
                               if (response['success']) {
                                 if (context.mounted) {
                                   ArtSweetAlert.show(

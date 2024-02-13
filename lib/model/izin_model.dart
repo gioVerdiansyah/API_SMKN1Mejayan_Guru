@@ -25,7 +25,6 @@ class IzinModel {
           body: json.encode({'izin_id': izinId, 'keterangan': keterangan, 'status': status}));
 
       var data = json.decode(response.body);
-      print(data);
       return data;
     } catch (e) {
       return {'success': false, 'message': "Ada kesalahan aplikasi!"};
@@ -46,7 +45,6 @@ class IzinModel {
       );
 
       var data = json.decode(response.body);
-      print(data);
       return data;
     }catch(e){
       return {

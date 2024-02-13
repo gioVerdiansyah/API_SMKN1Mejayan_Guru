@@ -43,7 +43,6 @@ class _RekapJurnalView extends State<RekapJurnalPage> {
   }
 
   void handleChangeUrl(Uri url) {
-    print(url);
     setState(() {
       changeUrl = url;
     });
@@ -184,8 +183,10 @@ class _FetchingDataJurnalFragment extends State<DataTableJurnalComponent> {
         return '1';
       case 'Ditolak':
         return '2';
-      default:
+      case 'Menunggu':
         return '0';
+      default:
+        return "NaV";
     }
   }
 
@@ -196,9 +197,9 @@ class _FetchingDataJurnalFragment extends State<DataTableJurnalComponent> {
       case '2':
         return 'Ditolak';
       case '0':
-        return 'Semua';
+        return 'Menunggu';
       default:
-        return 'Tidak mengisi';
+        return 'Semua';
     }
   }
 
@@ -267,8 +268,9 @@ class _FetchingDataJurnalFragment extends State<DataTableJurnalComponent> {
                       child: FormBuilderDropdown(
                     name: 'tipe_data',
                     initialValue: selectedValue,
-                    items:
-                        ['Semua', 'Disetujui', 'Ditolak'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+                    items: ['Semua', 'Menunggu', 'Disetujui', 'Ditolak']
+                        .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                        .toList(),
                     onChanged: (value) {
                       setState(() {
                         selectedValue = value.toString();
@@ -288,26 +290,34 @@ class _FetchingDataJurnalFragment extends State<DataTableJurnalComponent> {
         ),
         Column(
           children: [
-            DataTable(columns: const <DataColumn>[
-              DataColumn(
-                  label: Expanded(
-                      child: Text(
-                "Nama",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ))),
-              DataColumn(
-                  label: Expanded(
-                      child: Text(
-                "Status",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ))),
-              DataColumn(
-                  label: Expanded(
-                      child: Text(
-                "Aksi",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ))),
-            ], rows: dataRow),
+            (data['data'].isEmpty)
+                ? const Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: Text(
+                      "Tidak ada data...",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  )
+                : DataTable(columns: const <DataColumn>[
+                    DataColumn(
+                        label: Expanded(
+                            child: Text(
+                      "Nama",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ))),
+                    DataColumn(
+                        label: Expanded(
+                            child: Text(
+                      "Status",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ))),
+                    DataColumn(
+                        label: Expanded(
+                            child: Text(
+                      "Aksi",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ))),
+                  ], rows: dataRow),
             NextPrevDayComponent(
               prevDay: changeDay,
               theDay: theDay,

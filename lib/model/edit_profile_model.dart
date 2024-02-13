@@ -36,7 +36,6 @@ class EditProfileModel {
 
       var response = await http.Response.fromStream(await request.send());
       var data = json.decode(response.body);
-      print(data);
       return data;
     } catch (e) {
       print(e);

@@ -14,7 +14,6 @@ class JurnalModel {
       var data = json.decode(response.body);
       return data;
     } catch (e) {
-      print(e);
       return {
         'jurnal': {'success': false, 'message': "Ada kesalahan dari aplikasi"}
       };
@@ -29,7 +28,6 @@ class JurnalModel {
           body: json.encode({'jurnal_id': jurnalId, 'keterangan': keterangan, 'status': status}));
 
       var data = json.decode(response.body);
-      print(data);
       return data;
     } catch (e) {
       return {'success': false, 'message': "Ada kesalahan aplikasi!"};
@@ -42,7 +40,6 @@ class JurnalModel {
       var response = await http.get(url, headers: {'Content-Type': 'application/json', 'x-api-key': ApiRoutes.API_KEY});
 
       var data = json.decode(response.body);
-      print("BELUMM ${data}");
       return data;
     } catch (e) {
       return {'success': false, 'messgae': "Ada kesalahaan aplikasi"};
