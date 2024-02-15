@@ -1,7 +1,7 @@
 import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:pkl_smkn1mejayan_guru/env.dart';
 import 'package:pkl_smkn1mejayan_guru/modules/views/component/app_bar_component.dart';
 import 'package:pkl_smkn1mejayan_guru/modules/views/component/description_text_component.dart';
 import 'package:pkl_smkn1mejayan_guru/modules/views/component/utility.dart';
@@ -49,7 +49,7 @@ class _DetailIzinView extends State<DetailIzinPage> {
                           Center(
                             child: Container(
                                 decoration: BoxDecoration(border: Border.all(color: Colors.green, width: 2)),
-                                child: Image.network("${dotenv.get("STORAGE_URL")}/${data['bukti']}", width: 200)),
+                                child: Image.network("${Env.STORAGE_URL}/${data['bukti']}", width: 200)),
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 10),

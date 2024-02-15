@@ -1,7 +1,7 @@
 import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:pkl_smkn1mejayan_guru/env.dart';
 import 'package:pkl_smkn1mejayan_guru/model/jurnal_model.dart';
 import 'package:pkl_smkn1mejayan_guru/modules/views/component/app_bar_component.dart';
 import 'package:pkl_smkn1mejayan_guru/modules/views/component/description_text_component.dart';
@@ -56,7 +56,7 @@ class _DetailJurnalView extends State<DetailJurnalPage> {
                                 ),
                                 child: (data['bukti'] == null)
                                     ? const Text('No Image...')
-                                    : Image.network("${dotenv.get("STORAGE_URL")}/${data['bukti']}", width: 200)),
+                                    : Image.network("${Env.STORAGE_URL}/${data['bukti']}", width: 200)),
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 10),

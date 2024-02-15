@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pkl_smkn1mejayan_guru/routes/app_route.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -9,7 +8,6 @@ import 'package:restart_app/restart_app.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('id_ID', null);
-  await dotenv.load(fileName: 'assets/.env');
   await GetStorage.init();
   final box = GetStorage();
 

@@ -1,8 +1,8 @@
 import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:pkl_smkn1mejayan_guru/env.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../model/login_model.dart';
@@ -160,7 +160,7 @@ class _LoginView extends State<LoginPage> {
                             alignment: Alignment.center,
                             child: GestureDetector(
                               onTap: () => {
-                                launchUrl(Uri.parse("${dotenv.get('APP_URL')}/guru/password/reset"))
+                                launchUrl(Uri.parse("${Env.APP_URL}/guru/password/reset"))
                               },
                               child: const Padding(
                                 padding: EdgeInsets.only(top: 10),
