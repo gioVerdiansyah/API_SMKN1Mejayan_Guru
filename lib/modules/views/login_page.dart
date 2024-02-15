@@ -37,6 +37,8 @@ class _LoginView extends State<LoginPage> {
                     padding: const EdgeInsets.all(20),
                     child: Center(
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
