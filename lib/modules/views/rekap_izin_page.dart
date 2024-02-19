@@ -50,7 +50,7 @@ class _RekapJurnalView extends State<RekapIzinPage> {
         Container(
           child: Center(
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+              padding: const EdgeInsets.symmetric(vertical: 5),
               child: FutureBuilder(
                 future: IzinModel.getData(changeUrl: changeUrl),
                 builder: (context, snapshot) {
@@ -168,21 +168,21 @@ class _FetchingDataFragment extends State<DataTabeleIzinComponent> {
       var currentData = entry.value;
 
       return DataRow(cells: <DataCell>[
-        DataCell(Text(
-          (getNameFromStatus(currentData['status']) == "Semua") ? "Pending" : getNameFromStatus(currentData['status']),
-          style: TextStyle(color: setStatusColor(currentData['status'])),
-          textAlign: TextAlign.center,
-        )),
-        DataCell(Text((currentData['user'] == null)
-            ? "Unknown"
-            : truncateAndCapitalizeLastWord(currentData['user']['name'], maxLength: 10))),
-        DataCell(Text(currentData['tipe_izin'])),
         DataCell(TextButton(
           onPressed: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) => DetailIzinPage(data: currentData)));
           },
           style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.yellow)),
           child: const Text("Detail", style: TextStyle(color: Colors.white)),
+        )),
+        DataCell(Text((currentData['user'] == null)
+            ? "Unknown"
+            : truncateAndCapitalizeLastWord(currentData['user']['name'], maxLength: 10))),
+        DataCell(Text(currentData['tipe_izin'])),
+        DataCell(Text(
+          (getNameFromStatus(currentData['status']) == "Semua") ? "Pending" : getNameFromStatus(currentData['status']),
+          style: TextStyle(color: setStatusColor(currentData['status'])),
+          textAlign: TextAlign.center,
         )),
       ]);
     }).toList();
@@ -276,32 +276,35 @@ class _FetchingDataFragment extends State<DataTabeleIzinComponent> {
                       style: TextStyle(fontSize: 18),
                     ),
                   )
-                : DataTable(columns: const <DataColumn>[
-                    DataColumn(
-                        label: Expanded(
-                            child: Text(
-                      "#",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ))),
-                    DataColumn(
-                        label: Expanded(
-                            child: Text(
-                      "Nama",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ))),
-                    DataColumn(
-                        label: Expanded(
-                            child: Text(
-                      "Tipe",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ))),
-                    DataColumn(
-                        label: Expanded(
-                            child: Text(
-                      "Aksi",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ))),
-                  ], rows: dataRow),
+                : SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+                  child: DataTable(columns: const <DataColumn>[
+                      DataColumn(
+                          label: Expanded(
+                              child: Text(
+                        "Aksi",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ))),
+                      DataColumn(
+                          label: Expanded(
+                              child: Text(
+                        "Nama",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ))),
+                      DataColumn(
+                          label: Expanded(
+                              child: Text(
+                        "Tipe",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ))),
+                      DataColumn(
+                          label: Expanded(
+                              child: Text(
+                        "Status",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ))),
+                    ], rows: dataRow),
+                ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(mainAxisAlignment: handleMainAxis, children: paginate),

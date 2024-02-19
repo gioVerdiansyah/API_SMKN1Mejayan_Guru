@@ -32,13 +32,13 @@ class _EditProfileView extends State<EditProfilePage> {
       drawer: const SideBarComponent(),
       body: ListView(children: [
         Container(
-          margin: const EdgeInsets.all(20),
+          margin: const EdgeInsets.symmetric(horizontal: 3, vertical: 10),
           child: Center(
             child: Card(
               child: FormBuilder(
                 key: _formKey,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   child: Column(
                     children: [
                       const Center(

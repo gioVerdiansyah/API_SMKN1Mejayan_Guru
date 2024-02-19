@@ -39,7 +39,8 @@ class _HomeView extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final guru = widget.box.read('dataLogin')['guru'] ?? "";
+    final dataLogin = widget.box.read('dataLogin');
+    final guru = dataLogin['guru'] ?? "";
     return Scaffold(
       appBar: const AppBarComponent(),
       drawer: const SideBarComponent(),
@@ -75,12 +76,41 @@ class _HomeView extends State<HomePage> with TickerProviderStateMixin {
                             ),
                           ),
                           const Padding(
+                            padding: EdgeInsets.only(top: 10),
+                            child: Text("Mengampu", style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold
+                            ),),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 3),
+                                  child: Text(dataLogin['mengampu']['siswa'].toString(), style: const TextStyle(fontWeight:
+                                  FontWeight
+                                      .bold),),
+                                ),
+                                const Text("Siswa"),
+
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10, right: 3),
+                                  child: Text(dataLogin['mengampu']['kelompok'].toString(), style: const TextStyle(fontWeight:
+                                      FontWeight.bold),),
+                                ),
+                                const Text("Kelompok"),
+                              ],
+                            ),
+                          ),
+                          const Padding(
                             padding: EdgeInsets.only(top: 20),
                             child: Text(
                               "Fitur Utama Aplikasi",
                               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                             ),
-                          )
+                          ),
                         ],
                       ),
                     ),

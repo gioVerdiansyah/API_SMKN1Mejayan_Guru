@@ -41,7 +41,7 @@ class _AbsenBermasalahView extends State<AbsenBermasalahPage> {
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+            padding: const EdgeInsets.symmetric(vertical: 5),
             child: Card(
               margin: const EdgeInsets.all(8),
               child: Padding(

@@ -70,7 +70,7 @@ class _RekapJurnalView extends State<RekapJurnalPage> {
         ),
         Container(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+            padding: const EdgeInsets.symmetric(vertical: 5),
             child: Center(
               child: FutureBuilder(
                 future: JurnalModel.getData(changeUrl),
@@ -103,7 +103,7 @@ class _RekapJurnalView extends State<RekapJurnalPage> {
                                               const Padding(
                                                 padding: EdgeInsets.all(8.0),
                                                 child: Text("Siswa yang belum mengisi jurnal",
-                                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                                               ),
                                               DataTableDoesntJurnalComponent(
                                                 namaKelompok: snapshot.data['kelompok_ini'],
@@ -221,11 +221,6 @@ class _FetchingDataJurnalFragment extends State<DataTableJurnalComponent> {
       var data = entry.value;
 
       return DataRow(cells: <DataCell>[
-        DataCell(Text(truncateAndCapitalizeLastWord(data['user']['name'], maxLength: 15))),
-        DataCell(Text(
-          (getNameFromStatus(data['status']) == 'Semua') ? 'Pending' : getNameFromStatus(data['status']),
-          style: TextStyle(color: setStatusColor(data['status'])),
-        )),
         DataCell(TextButton(
           onPressed: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) => DetailJurnalPage(data: data)));
@@ -233,13 +228,18 @@ class _FetchingDataJurnalFragment extends State<DataTableJurnalComponent> {
           style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.yellow)),
           child: const Text('Detail', style: TextStyle(color: Colors.white)),
         )),
+        DataCell(Text(truncateAndCapitalizeLastWord(data['user']['name'], maxLength: 15))),
+        DataCell(Text(
+          (getNameFromStatus(data['status']) == 'Semua') ? 'Pending' : getNameFromStatus(data['status']),
+          style: TextStyle(color: setStatusColor(data['status'])),
+        )),
       ]);
     }).toList();
 
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Row(
             children: [
               Expanded(
@@ -297,26 +297,29 @@ class _FetchingDataJurnalFragment extends State<DataTableJurnalComponent> {
                       style: TextStyle(fontSize: 18),
                     ),
                   )
-                : DataTable(columns: const <DataColumn>[
-                    DataColumn(
-                        label: Expanded(
-                            child: Text(
-                      "Nama",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ))),
-                    DataColumn(
-                        label: Expanded(
-                            child: Text(
-                      "Status",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ))),
-                    DataColumn(
-                        label: Expanded(
-                            child: Text(
-                      "Aksi",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ))),
-                  ], rows: dataRow),
+                : SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: DataTable(columns: const <DataColumn>[
+                      DataColumn(
+                          label: Expanded(
+                              child: Text(
+                        "Aksi",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ))),
+                      DataColumn(
+                          label: Expanded(
+                              child: Text(
+                        "Nama",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ))),
+                      DataColumn(
+                          label: Expanded(
+                              child: Text(
+                        "Status",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ))),
+                    ], rows: dataRow),
+                  ),
             NextPrevDayComponent(
               prevDay: changeDay,
               theDay: theDay,

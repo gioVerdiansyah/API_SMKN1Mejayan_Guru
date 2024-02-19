@@ -70,7 +70,7 @@ class _RekapAbsensiView extends State<RekapAbsensiPage> {
         ),
         Container(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+            padding: const EdgeInsets.symmetric(vertical: 5),
             child: Center(
               child: FutureBuilder(
                   future: AbsenModel.getData(changeUrl: changeUrl),
@@ -83,40 +83,43 @@ class _RekapAbsensiView extends State<RekapAbsensiPage> {
                       if (snapshot.data['kelompok'] == null || snapshot.data['kelompok'].isEmpty) {
                         return const Center(child: Text("Anda belum mempunyai kelompok untuk di urus"));
                       } else {
-                        return Column(
-                          children: [
-                            Card(
-                              child: DataTableAbsenComponent(
-                                  hasAbsen: handleHasAbsen, data: snapshot.data, changeUrl: handleChangeUrl),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 10),
-                              child: Card(
-                                child: TextButton.icon(
-                                    onPressed: () {
-                                      launchUrl(ApiRoutes.cetakRekabAbsenRoute);
-                                    },
-                                    icon: const Icon(Icons.print, color: Colors.white),
-                                    label: const Text(
-                                        "Cetak "
-                                        "data absensi",
-                                        style: TextStyle(color: Colors.white)),
-                                    style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.yellow))),
-                              ),
-                            ),
-                            if (hasAbsen)
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
                               Card(
-                                  child: Column(
-                                children: [
-                                  const Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Text("Siswa yang belum absen",
-                                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-                                  ),
-                                  DataTableDoesntAbsenComponent(namaKelompok: snapshot.data['kelompok_ini']),
-                                ],
-                              ))
-                          ],
+                                child: DataTableAbsenComponent(
+                                    hasAbsen: handleHasAbsen, data: snapshot.data, changeUrl: handleChangeUrl),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 10),
+                                child: Card(
+                                  child: TextButton.icon(
+                                      onPressed: () {
+                                        launchUrl(ApiRoutes.cetakRekabAbsenRoute);
+                                      },
+                                      icon: const Icon(Icons.print, color: Colors.white),
+                                      label: const Text(
+                                          "Cetak "
+                                          "data absensi",
+                                          style: TextStyle(color: Colors.white)),
+                                      style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.yellow))),
+                                ),
+                              ),
+                              if (hasAbsen)
+                                Card(
+                                    child: Column(
+                                  children: [
+                                    const Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Text("Siswa yang belum absen",
+                                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                                    ),
+                                    DataTableDoesntAbsenComponent(namaKelompok: snapshot.data['kelompok_ini']),
+                                  ],
+                                ))
+                            ],
+                          ),
                         );
                       }
                     }
@@ -194,7 +197,7 @@ class _FetchingDataFragment extends State<DataTableAbsenComponent> {
       children: [
         FormBuilder(
             child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 5),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
           child: FormBuilderDropdown(
             initialValue: data['kelompok_ini'],
             name: 'tipe_data',
@@ -207,32 +210,35 @@ class _FetchingDataFragment extends State<DataTableAbsenComponent> {
           ),
         )),
         Text(convertDayFromNumber(data['hari'])),
-        DataTable(columns: const <DataColumn>[
-          DataColumn(
-              label: Expanded(
-                  child: Text(
-            "Nama",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ))),
-          DataColumn(
-              label: Expanded(
-                  child: Text(
-            "Tipe",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ))),
-          DataColumn(
-              label: Expanded(
-                  child: Text(
-            "Datang",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ))),
-          DataColumn(
-              label: Expanded(
-                  child: Text(
-            "Pulang",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ))),
-        ], rows: dataRow),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: DataTable(columns: const <DataColumn>[
+            DataColumn(
+                label: Expanded(
+                    child: Text(
+              "Nama",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ))),
+            DataColumn(
+                label: Expanded(
+                    child: Text(
+              "Tipe",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ))),
+            DataColumn(
+                label: Expanded(
+                    child: Text(
+              "Datang",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ))),
+            DataColumn(
+                label: Expanded(
+                    child: Text(
+              "Pulang",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ))),
+          ], rows: dataRow),
+        ),
         NextPrevDayComponent(prevDay: changeDay, theDay: theDay)
       ],
     );
