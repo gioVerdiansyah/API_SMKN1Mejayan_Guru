@@ -28,8 +28,10 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       initialRoute: AppRoute.INITIAL,
       routes: AppRoute.routes,
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.green,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green)
       ),
     );
   }
