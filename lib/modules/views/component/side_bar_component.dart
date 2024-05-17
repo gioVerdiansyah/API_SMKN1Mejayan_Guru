@@ -1,6 +1,7 @@
 import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:pkl_smkn1mejayan_guru/model/login_model.dart';
 import 'package:pkl_smkn1mejayan_guru/modules/views/component/utility.dart';
 
 import '../../../routes/app_route.dart';
@@ -32,8 +33,11 @@ class _SideBarView extends State<SideBarComponent> {
               decoration: const BoxDecoration(color: Colors.green),
               child: Row(
                 children: [
-                  Image.network(
-                    "${guru['photo_guru']}",
+                  FadeInImage(
+                    placeholder: const AssetImage('assets/images/loading.gif'),
+                    image: NetworkImage(
+                      "${guru['photo_guru']}",
+                    ),
                     width: 75,
                     height: 75,
                   ),
@@ -119,13 +123,25 @@ class _SideBarView extends State<SideBarComponent> {
               }
 
               if (response.isTapConfirmButton) {
-                GetStorage().erase();
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                  (route) => false,
-                );
-                return;
+                var response = await LoginModel.logout();
+
+                if (response['success']) {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                    (route) => false,
+                  );
+                  return;
+                } else {
+                  ArtSweetAlert.show(
+                      barrierDismissible: false,
+                      context: context,
+                      artDialogArgs: ArtDialogArgs(
+                          title: "Ada Kesalahan",
+                          text: response['message'],
+                          confirmButtonText: "Ya",
+                          type: ArtSweetAlertType.danger));
+                }
               }
             },
           ),

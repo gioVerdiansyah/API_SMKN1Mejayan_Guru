@@ -38,7 +38,6 @@ class EditProfileModel {
       var data = json.decode(response.body);
       return data;
     } catch (e) {
-      print(e);
       return {
         'success': false, 'message': "Ada kesalahan aplikasi!"
       };

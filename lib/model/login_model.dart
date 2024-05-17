@@ -28,9 +28,33 @@ class LoginModel{
       }
       return data;
     }catch(e){
-      print(e);
       return {
         'success': false, 'message': 'Ada kesalahan Server'
+      };
+    }
+  }
+  static Future logout() async{
+    GetStorage box = GetStorage();
+    try {
+      final Uri url = ApiRoutes.logoutRoute;
+      print(box.read('dataLogin'));
+      var response = await http.post(
+          url,
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": ApiRoutes.API_KEY,
+            'Authorization': "Bearer ${box.read('dataLogin')['token']}"
+          },
+      );
+
+      var data = json.decode(response.body);
+      if(data['success']){
+        box.erase();
+      }
+      return data;
+    }catch(e){
+      return {
+        'success': false, 'message': 'Ada kesalahan Server', "data": e
       };
     }
   }

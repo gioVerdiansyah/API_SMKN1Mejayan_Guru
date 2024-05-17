@@ -6,6 +6,7 @@ class ApiRoutes {
   static final GetStorage box = GetStorage();
 
   static final Uri loginRoute = Uri.parse("${Env.API_URL}/login");
+  static final Uri logoutRoute = Uri.parse("${Env.API_URL}/logout");
   static final String guruId = box.read('dataLogin')['guru']['id'];
 
   static final Uri getDataAbsenRoute = Uri.parse("${Env.API_URL}/$guruId/absensi/get");

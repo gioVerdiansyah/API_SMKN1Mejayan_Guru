@@ -145,7 +145,7 @@ class _DetailIzinView extends State<DetailIzinPage> {
                                                                       title: "Berhasil!",
                                                                       text: response['message'],
                                                                       onConfirm: () {
-                                                                        Navigator.pushNamed(context, AppRoute.rekapIzin);
+                                                                        Navigator.pop(context, true);
                                                                       }),
                                                                   barrierDismissible: false);
                                                             }

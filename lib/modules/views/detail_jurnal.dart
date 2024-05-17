@@ -46,25 +46,30 @@ class _DetailJurnalView extends State<DetailJurnalPage> {
                           const Text("Bukti Jurnal:", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                           Center(
                             child: Container(
-                                decoration: BoxDecoration(
-                                  border: data['bukti'] != null
-                                      ? Border.all(
-                                    color: Colors.green,
-                                    width: 2,
-                                  )
-                                      : null,
-                                ),
-                                child: (data['bukti'] == null)
-                                    ? const Text('No Image...')
-                                    : Image.network("${Env.STORAGE_URL}/${data['bukti']}", width: 200)),
+                              decoration: BoxDecoration(
+                                border: data['bukti'] != null
+                                    ? Border.all(
+                                        color: Colors.green,
+                                        width: 2,
+                                      )
+                                    : null,
+                              ),
+                              child: (data['bukti'] == null)
+                                  ? const Text('No Image...')
+                                  : FadeInImage(
+                                      placeholder: const AssetImage('assets/images/loading.gif'),
+                                      image: NetworkImage("${Env.STORAGE_URL}/${data['bukti']}"),
+                                      width: 200,
+                                    ),
+                            ),
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 10),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text("Uraian Kegiatan:", style: TextStyle(fontSize: 15, fontWeight: FontWeight
-                                    .bold)),
+                                const Text("Uraian Kegiatan:",
+                                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                                 DescriptionText(
                                   alasan: data['kegiatan'],
                                   maxLength: 400,
@@ -139,8 +144,7 @@ class _DetailJurnalView extends State<DetailJurnalPage> {
                                                                             title: "Berhasil!",
                                                                             text: response['message'],
                                                                             onConfirm: () {
-                                                                              Navigator.pushNamed(
-                                                                                  context, AppRoute.rekapJurnal);
+                                                                              Navigator.pop(context, true);
                                                                             }),
                                                                         barrierDismissible: false);
                                                                   }

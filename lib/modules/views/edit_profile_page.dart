@@ -22,8 +22,8 @@ class _EditProfileView extends State<EditProfilePage> {
   final TextEditingController oldPassController = TextEditingController();
   final TextEditingController confirmPassController = TextEditingController();
   final TextEditingController newPassController = TextEditingController();
-  final TextEditingController newPhoneController = TextEditingController(text: GetStorage().read('dataLogin')
-  ['guru']['no_hp'].toString());
+  final TextEditingController newPhoneController =
+      TextEditingController(text: GetStorage().read('dataLogin')['guru']['no_hp'].toString());
   List<PlatformFile>? photoProfileController;
   @override
   Widget build(BuildContext context) {
@@ -46,8 +46,9 @@ class _EditProfileView extends State<EditProfilePage> {
                       ),
                       Column(
                         children: [
-                          Image.network(
-                            "${GetStorage().read('dataLogin')['guru']['photo_guru']}",
+                          FadeInImage(
+                            placeholder: const AssetImage('assets/images/loading.gif'),
+                            image: NetworkImage("${GetStorage().read('dataLogin')['guru']['photo_guru']}"),
                             width: 75,
                             height: 75,
                           ),
@@ -90,7 +91,7 @@ class _EditProfileView extends State<EditProfilePage> {
                         decoration: const InputDecoration(labelText: 'Nomor HP (62xxx)'),
                         controller: newPhoneController,
                         validator: (value) {
-                          if(!RegExp(r'^62\d+$').hasMatch(value!)){
+                          if (!RegExp(r'^62\d+$').hasMatch(value!)) {
                             return "Invalid input. Must start with 62.";
                           }
                         },

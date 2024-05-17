@@ -10,7 +10,6 @@ class IzinModel {
       var response = await http.get(url, headers: {'Content-Type': 'application/json', 'x-api-key': ApiRoutes.API_KEY});
 
       var data = json.decode(response.body);
-      print(data);
       return data;
     } catch (e) {
       return {'success': false, 'message': "Ada kesalahan aplikasi"};
