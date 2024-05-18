@@ -57,10 +57,10 @@ class _RekapAbsensiView extends State<RekapAbsensiPage> {
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: Column(
             children: [
-              const Text("Rekap Absensi", style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18
-              ),),
+              const Text(
+                "Rekap Absensi",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
               Text(
                 getDateNow(),
                 style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
@@ -282,26 +282,42 @@ class _FetchingDataDoesntAbsenFragment extends State<DataTableDoesntAbsenCompone
 
                     return DataRow(cells: <DataCell>[
                       DataCell(Text(index.toString())),
-                      DataCell(Text(data['name'] ?? "")),
+                      DataCell(Text(data['absen'].toString().padLeft(2, "0") ?? "")),
+                      DataCell(Text(truncateAndCapitalizeLastWord(data['name'] ?? "", maxLength: 15))),
+                      DataCell(Text(data[getDay()] == null ? "libur" : 'masuk')),
                     ]);
                   }).toList();
 
                   return Container(
                     width: double.infinity,
-                    child: DataTable(columns: const <DataColumn>[
-                      DataColumn(
-                          label: Expanded(
-                              child: Text(
-                        "#",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ))),
-                      DataColumn(
-                          label: Expanded(
-                              child: Text(
-                        "Nama",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ))),
-                    ], rows: dataRow),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: DataTable(columns: const <DataColumn>[
+                        DataColumn(
+                            label: Expanded(
+                                child: Text(
+                          "#",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ))),
+                        DataColumn(
+                            label: Expanded(
+                                child: Text(
+                          "Absen",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ))),
+                        DataColumn(
+                            label: Text(
+                          "Nama",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        )),
+                        DataColumn(
+                            label: Expanded(
+                                child: Text(
+                          "Ket",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ))),
+                      ], rows: dataRow),
+                    ),
                   );
                 }
               }),
