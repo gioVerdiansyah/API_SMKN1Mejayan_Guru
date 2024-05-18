@@ -363,7 +363,9 @@ class _FetchingDataDoesntJurnalFragment extends State<DataTableDoesntJurnalCompo
 
                     return DataRow(cells: <DataCell>[
                       DataCell(Text(index.toString())),
-                      DataCell(Text(data['name'])),
+                      DataCell(Text(data['absen'].toString().padLeft(2, "0"))),
+                      DataCell(Text(truncateAndCapitalizeLastWord(data['name'] ?? "", maxLength: 15))),
+                      DataCell(Text(data[getDay()] == null ? 'libur' : 'masuk')),
                     ]);
                   }).toList();
 
@@ -376,20 +378,33 @@ class _FetchingDataDoesntJurnalFragment extends State<DataTableDoesntJurnalCompo
 
                   return Container(
                     width: double.infinity,
-                    child: DataTable(columns: const <DataColumn>[
-                      DataColumn(
-                          label: Expanded(
-                              child: Text(
-                        "#",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ))),
-                      DataColumn(
-                          label: Expanded(
-                              child: Text(
-                        "Nama",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ))),
-                    ], rows: dataRow),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: DataTable(columns: const <DataColumn>[
+                        DataColumn(
+                            label: Expanded(
+                                child: Text(
+                          "#",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ))),
+                        DataColumn(
+                            label: Expanded(
+                                child: Text(
+                          "Absen",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ))),
+                        DataColumn(
+                            label: Text(
+                          "Nama",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        )),
+                        DataColumn(
+                            label: Text(
+                          "Ket",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        )),
+                      ], rows: dataRow),
+                    ),
                   );
                 }
               }),
