@@ -2,6 +2,7 @@ import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_file_picker/form_builder_file_picker.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:pkl_smkn1mejayan_guru/modules/views/component/side_bar_component.dart';
 
@@ -18,13 +19,25 @@ class EditProfilePage extends StatefulWidget {
 
 class _EditProfileView extends State<EditProfilePage> {
   final _formKey = GlobalKey<FormBuilderState>();
+  var box = GetStorage().read('dataLogin')['user'];
 
   final TextEditingController oldPassController = TextEditingController();
   final TextEditingController confirmPassController = TextEditingController();
   final TextEditingController newPassController = TextEditingController();
-  final TextEditingController newPhoneController =
-      TextEditingController(text: GetStorage().read('dataLogin')['guru']['no_hp'].toString());
+  late TextEditingController descriptionController = TextEditingController();
+  late TextEditingController newPhoneController;
+  late TextEditingController newEmailController;
   List<PlatformFile>? photoProfileController;
+
+  @override
+  void initState() {
+    super.initState();
+    box = GetStorage().read('dataLogin')['guru'];
+    newPhoneController = TextEditingController(text: box['no_hp'].toString());
+    newEmailController = TextEditingController(text: box['email'].toString());
+    if(box['deskripsi'] != null) descriptionController = TextEditingController(text: box['deskripsi'].toString());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,6 +64,15 @@ class _EditProfileView extends State<EditProfilePage> {
                             image: NetworkImage("${GetStorage().read('dataLogin')['guru']['photo_guru']}"),
                             width: 75,
                             height: 75,
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(top: 10),
+                            width: MediaQuery.of(context).size.width / 2,
+                            child: Text(
+                              box['nama'],
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
                           FormBuilderFilePicker(
                             withData: true,
@@ -80,11 +102,12 @@ class _EditProfileView extends State<EditProfilePage> {
                           ),
                         ],
                       ),
-                      const Padding(
-                        padding: EdgeInsets.only(top: 30),
-                        child: Center(
-                          child: Text('Ubah Nomor HP', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                        ),
+                      FormBuilderTextField(
+                        name: 'email',
+                        decoration: const InputDecoration(labelText: 'Email'),
+                        controller: newEmailController,
+                        validator: FormBuilderValidators.compose([FormBuilderValidators.required(),
+                          FormBuilderValidators.email()])
                       ),
                       FormBuilderTextField(
                         name: 'no_hp',
@@ -95,6 +118,13 @@ class _EditProfileView extends State<EditProfilePage> {
                             return "Invalid input. Must start with 62.";
                           }
                         },
+                      ),
+                      FormBuilderTextField(
+                        name: 'description',
+                        decoration: const InputDecoration(labelText: 'Deskripsi singkat Anda', floatingLabelBehavior:
+                        FloatingLabelBehavior.always),
+                        controller: descriptionController,
+                        maxLines: 3,
                       ),
                       const Padding(
                         padding: EdgeInsets.only(top: 30),
@@ -135,7 +165,10 @@ class _EditProfileView extends State<EditProfilePage> {
                                   confirmPassController.text,
                                   newPassController.text,
                                   photoProfileController,
-                                  newPhoneController.text);
+                                  newPhoneController.text,
+                                  newEmailController.text,
+                                  descriptionController.text
+                              );
                               if (response['success']) {
                                 if (context.mounted) {
                                   ArtSweetAlert.show(

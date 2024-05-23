@@ -49,7 +49,11 @@ class _DetailIzinView extends State<DetailIzinPage> {
                           Center(
                             child: Container(
                                 decoration: BoxDecoration(border: Border.all(color: Colors.green, width: 2)),
-                                child: Image.network("${Env.STORAGE_URL}/${data['bukti']}", width: 200)),
+                                child: FadeInImage(
+                                  placeholder: const AssetImage('assets/images/loading.gif'),
+                                  image: NetworkImage("${Env.STORAGE_URL}/${data['bukti']}"),
+                                  width: 300,
+                                ),),
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 10),
