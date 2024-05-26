@@ -202,6 +202,23 @@ class _FetchingDataJurnalFragment extends State<DataTableJurnalComponent> {
     }
   }
 
+  String getStatusJurnal(value) {
+    switch (value) {
+      case '1':
+        return 'Disetujui';
+      case '2':
+        return 'Ditolak';
+      case '3':
+        return 'Alpha';
+      case '4':
+        return 'Izin';
+      case '0':
+        return 'Menunggu';
+      default:
+        return 'Pending';
+    }
+  }
+
   Color? setStatusColor(data) {
     switch (data) {
       case '1':
@@ -219,6 +236,7 @@ class _FetchingDataJurnalFragment extends State<DataTableJurnalComponent> {
   Widget build(BuildContext context) {
     List<DataRow> dataRow = (data['data'] as List).asMap().entries.map((entry) {
       var data = entry.value;
+      print(data);
 
       return DataRow(cells: <DataCell>[
         DataCell(TextButton(
@@ -230,7 +248,7 @@ class _FetchingDataJurnalFragment extends State<DataTableJurnalComponent> {
         )),
         DataCell(Text(truncateAndCapitalizeLastWord(data['user']['name'], maxLength: 15))),
         DataCell(Text(
-          (getNameFromStatus(data['status']) == 'Semua') ? 'Pending' : getNameFromStatus(data['status']),
+          getStatusJurnal(data['status']),
           style: TextStyle(color: setStatusColor(data['status'])),
         )),
       ]);
